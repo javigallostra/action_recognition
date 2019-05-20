@@ -20,7 +20,6 @@ class SequenceGenerator:
 
     def generate(self):
         sequence = []
-        current_state = []
         dt = 0
         for step in self.step_list:
             # check for lists: events that can swap order
@@ -28,33 +27,13 @@ class SequenceGenerator:
                 # shuffle and add/remove state
                 rn.shuffle(step)
                 for event, tmin, tmax in step:
-                    # object away
-                    if event % 10 == 0:
-                        if event+1 in current_state:
-                            del current_state[current_state.index(event+1)]
-                        if event+2 in current_state:
-                            del current_state[current_state.index(event+2)]
-                    # new event
-                    else:
-                        current_state.append(event)
                     # add duration (dt)
                     dt = rn.random() * (tmax - tmin) + tmin
-                    sequence.append([current_state.copy(), dt])
+                    sequence.append([event, dt])
             else:
                 event, tmin, tmax = step
-                # object away
-                if event % 10 == 0:
-                    if event+1 in current_state:
-                        del current_state[current_state.index(event+1)]
-                    if event+2 in current_state:
-                        del current_state[current_state.index(event+2)]
-                # new event
-                else:
-                    current_state.append(event)
-                # add duration (dt)
                 dt = rn.random() * (tmax - tmin) + tmin
-                sequence.append([current_state.copy(), dt])
-                
+                sequence.append([event, dt])
+
         # return
         return sequence
-
