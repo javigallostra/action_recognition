@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from colorsys import hsv_to_rgb
 from math import sqrt
 from state import *
+from random import random
 
 """
 Class representing an ASN with full functionality.
@@ -15,15 +16,13 @@ class ASN_BASE:
     def __init__(self):
         # create graph with start nodes
         self.graph = nx.DiGraph()
-        self.graph.add_node(0, state=State([]), end=False, color=[1,0,0], value=0.0) # start
+        self.graph.add_node(0, state=State([]), end=False, color=[1,0,0], value=0.1) # start
         # keep track of node count
         self.node_count = 1
         # keep track of end node
         self.end_node = 0
         # keep track of current state
         self.latest_state = State([])
-        # positions of the nodes for drawing
-        self.nodes_pos = {}
 
     """
     End building the graph, setting the
@@ -39,10 +38,8 @@ class ASN_BASE:
     """
     def plot(self):
         plt.plot()
-        #graph_pos = nx.spring_layout(self.graph)
-        nx.draw(self.graph, pos=self.nodes_pos, node_color=self._node_color_map(), edge_color=self._edge_color_map(), font_color=[1,1,1], with_labels=True, font_weight='bold')
-        #nx.draw(self.graph, pos=graph_pos,font_color=[1,1,1], with_labels=True, font_weight='bold')
-        nx.draw_networkx_edge_labels(self.graph, pos=self.nodes_pos, edge_labels=self._edge_labels())
+        nx.draw(self.graph, labels=self._node_label_map(), font_color='k', pos=self._node_position(), node_color=self._node_color_map(), node_size=self._node_size_map(), edge_color=self._edge_color_map(), with_labels=True, font_weight='bold')
+        nx.draw_networkx_edge_labels(self.graph, pos=self._node_position(), edge_labels=self._edge_labels())
         plt.show()
 
     """
@@ -52,16 +49,22 @@ class ASN_BASE:
     def _edge_color_map(self):
         # 1. find the edge with highest weight
         # 2. colorize all edges with saturation = weight/max_weight
-        max_w = 0
+        max_w = max([self.graph.edge[e0][e1]['weight'] for (e0,e1) in self.graph.edges()])
         for ni, nf, weight in self.graph.edges(data='weight'):
             if weight > max_w:
                 max_w = weight
             for ni, nf, weight in self.graph.edges(data='weight'):
-                c = 0#1- weight/max_w
+                c = 1 - weight/max_w
                 rgb = (c, c, c)
                 self.graph.edge[ni][nf]['color'] = rgb
         cmap = [self.graph.edge[edge[0]][edge[1]]['color'] for edge in self.graph.edges()]
         return cmap
+
+    def _node_label_map(self):
+        labels = {}
+        for n in self.graph.nodes():
+            labels[n] = "{:.2f}".format(self.graph.node[n]['value'])
+        return labels
 
     """
     Compute a color map of the graph nodes based on
@@ -70,7 +73,7 @@ class ASN_BASE:
     def _node_color_map(self):
         # colorize the graph nodes
         # 1. start at pure green
-        # 2. equally traverse all the (hue/value) until (green',0)
+        # 2. equally traverse all the (hue/value) until (0/1)
         for n in range(1,self.node_count):
             h = (1/3) + 0.5*(1 - n/(self.node_count-2))
             s = 1
@@ -81,6 +84,27 @@ class ASN_BASE:
         cmap = [self.graph.node[i]['color'] for i in self.graph.nodes()]
         cmap[self.node_count - 1] = self.graph.node[0]['color']
         return cmap
+
+
+    def _node_size_map(self):
+        max_value = max([self.graph.node[n]['value'] for n in self.graph.nodes()])
+        sizes = []
+        for n in range(self.node_count):
+            sizes.append(200 + 300*self.graph.node[n]['value']/max_value)
+        return sizes
+
+
+    def _node_position(self):
+        mapping = self._node_depth_map()
+        # generate a position map based on node depth
+        nodes_pos = {}
+        for depth in range(len(mapping)):
+            depth_elems = mapping[depth]
+            total_width = len(depth_elems)
+            for width in range(total_width):
+                elem = depth_elems[width]
+                nodes_pos[elem] = (width-total_width/2, depth)
+        return nodes_pos
 
     """
     Generate the labels of the graph edges
@@ -109,6 +133,7 @@ class ASN_BASE:
             self.add_node_by_state(new_state, parent_state)
             self.end()
         else:
+            # normal case: check edge and add if necessary
             event = new_state - parent_state
             current_states_hash = [self.graph.node[n]['state'].hash() for n in range(self.node_count)]
             parent_node = current_states_hash.index(parent_state.hash())
@@ -153,7 +178,7 @@ class ASN_BASE:
         current_states_hash = [self.graph.node[n]['state'].hash() for n in range(self.node_count)]
         # add node if needed, else do nothing
         if new_state.hash() not in current_states_hash:
-            self.graph.add_node(self.node_count, state=new_state.copy(), end=False, color=[0,0,0], value=0)
+            self.graph.add_node(self.node_count, state=new_state.copy(), end=False, color=[0,0,0], value=0.0)
             current_states_hash.append(new_state.hash())
             self.node_count += 1
         # add edge if needed, else do nothing
@@ -166,27 +191,56 @@ class ASN_BASE:
         self.latest_state = new_state.copy()
 
     """
+    Generate a dictionary containing pairs
+    'depth:[nodes in depth]''
+    """
+    def _node_depth_map(self):
+        node_depth_map = {0:[0]}
+        for path in nx.all_simple_paths(self.graph,0,self.end_node):
+            for depth in range(len(path)):
+                if depth not in node_depth_map:
+                    node_depth_map[depth] = []
+                if path[depth] not in node_depth_map[depth]:
+                    node_depth_map[depth].append(path[depth])
+        return node_depth_map
+
+    """
     Rename the graph nodes ordered by
     their 'depth level', useful after
     merging two graphs
     """
     def _relabel_nodes(self):
-        node_depth = {0:[0]}
-        for path in nx.all_simple_paths(self.graph,0,self.end_node):
-            for depth in range(len(path)):
-                if depth not in node_depth:
-                    node_depth[depth] = []
-                if path[depth] not in node_depth[depth]:
-                    node_depth[depth].append(path[depth])
-        node_count = -1
+        # generate a relabel map based on node depth
+        count = 0
         node_remap = {}
-        for depth in range(len(node_depth)):
-            depth_elems = node_depth[depth]
-            total_width = len(depth_elems)
-            for width in range(total_width):
-                elem = depth_elems[width]
-                node_count += 1
-                node_remap[elem] = node_count
-                self.nodes_pos[node_count] = (width-total_width/2, depth)
+        mapping = self._node_depth_map()
+        for depth in range(len(mapping)):
+            depth_elems = mapping[depth]
+            for node in depth_elems:
+                node_remap[node] = count
+                count += 1
+        # relabel nodes
         self.graph = nx.relabel_nodes(self.graph, node_remap)
+        # update end node id
         self.end_node = self.node_count - 1
+
+
+    """
+    Export the ASN data to a .yaml file that
+    can be loaded again.
+    """
+    def export(self, filename = "ASN_EXPORT.yaml"):
+        nx.write_yaml(self.graph,"./exports/" + filename)
+
+    """
+    Load a previously exported YAML file.
+    """
+    def load(self, filename = "ASN_EXPORT.yaml"):
+        # Read graph
+        self.graph = nx.read_yaml("./exports/" + filename)
+        # Set node node_count
+        self.node_count = len(list(self.graph.nodes()))
+        # Set end node id
+        self.end_node = self.node_count - 1
+        # update latest_state
+        self.latest_state = self.graph.node[self.end_node]['state'].copy()

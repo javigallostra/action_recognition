@@ -6,6 +6,7 @@ class SequenceGenerator:
         self.step_list = []
         self.distribution_list = []
         self.combinations = 0
+        self.past_events = []
 
     def add_step(self, step):#, distr):
         self.step_list.append(step)
@@ -20,20 +21,16 @@ class SequenceGenerator:
 
     def generate(self):
         sequence = []
+        self.past_events = []
         dt = 0
         for step in self.step_list:
-            # check for lists: events that can swap order
-            if type(step).__name__ == 'list':
-                # shuffle and add/remove state
-                rn.shuffle(step)
-                for event, tmin, tmax in step:
-                    # add duration (dt)
-                    dt = rn.random() * (tmax - tmin) + tmin
-                    sequence.append([event, dt])
-            else:
-                event, tmin, tmax = step
+            # shuffle and add/remove state
+            rn.shuffle(step)
+            for event, tmin, tmax in step:
+                # add duration (dt)
                 dt = rn.random() * (tmax - tmin) + tmin
-                sequence.append([event, dt])
+                self.past_events.append(event)
+                sequence.append([event, dt, list(self.past_events)])
 
         # return
         return sequence

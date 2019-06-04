@@ -8,6 +8,10 @@ class State:
                 self.state_dict[event] = 1
 
     def __eq__(self, eq_state):
+        # check if object is of different type
+        if (type(eq_state) != "<class 'state.State'>"):
+            return False
+        # compare states
         for event in eq_state.state_dict.keys():
             if event not in self.state_dict.keys():
                 return False
