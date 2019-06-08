@@ -4,13 +4,10 @@ class SequenceGenerator:
 
     def __init__(self):
         self.step_list = []
-        self.distribution_list = []
-        self.combinations = 0
         self.past_events = []
 
-    def add_step(self, step):#, distr):
+    def add_step(self, step):
         self.step_list.append(step)
-        #self.distribution_list.append(distr)
 
     def variations(self):
         variations = 1
@@ -21,7 +18,7 @@ class SequenceGenerator:
 
     def generate(self):
         sequence = []
-        self.past_events = []
+        self.past_event = 0
         dt = 0
         for step in self.step_list:
             # shuffle and add/remove state
@@ -29,8 +26,11 @@ class SequenceGenerator:
             for event, tmin, tmax in step:
                 # add duration (dt)
                 dt = rn.random() * (tmax - tmin) + tmin
-                self.past_events.append(event)
-                sequence.append([event, dt, list(self.past_events)])
+                sequence.append([event, dt, self.past_event])
+                if event % 10 == 0:
+                    self.past_event = 0
+                else:
+                    self.past_event = event
 
         # return
         return sequence

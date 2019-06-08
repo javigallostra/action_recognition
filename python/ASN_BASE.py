@@ -5,10 +5,13 @@ from math import sqrt
 from state import *
 from random import random
 
+
+from time import sleep
+
 """
 Class representing an ASN with full functionality.
 """
-class ASN_BASE:
+class ASN_BASE(object):
     """
     Create a directed graph, add the first node,
     and initialize ASN variables.
@@ -16,13 +19,15 @@ class ASN_BASE:
     def __init__(self):
         # create graph with start nodes
         self.graph = nx.DiGraph()
-        self.graph.add_node(0, state=State([]), end=False, color=[1,0,0], value=0.1) # start
+        self.graph.add_node(0, state=State([]), end=False, color=[1,0,0], value=1) # start
         # keep track of node count
         self.node_count = 1
         # keep track of end node
         self.end_node = 0
         # keep track of current state
         self.latest_state = State([])
+        # figure to plot to
+        self.figure = 1
 
     """
     End building the graph, setting the
@@ -36,11 +41,20 @@ class ASN_BASE:
     """
     Plot the graph using matplotlib
     """
-    def plot(self):
-        plt.plot()
+    def plot(self, fig = 0):
+        # change figure if needed
+        if fig:
+            self.figure = fig
+        # switch to interactive and clear figure
+        plt.ion()
+        plt.figure(self.figure)
+        plt.clf()
+        # draw graph
         nx.draw(self.graph, labels=self._node_label_map(), font_color='k', pos=self._node_position(), node_color=self._node_color_map(), node_size=self._node_size_map(), edge_color=self._edge_color_map(), with_labels=True, font_weight='bold')
         nx.draw_networkx_edge_labels(self.graph, pos=self._node_position(), edge_labels=self._edge_labels())
+        # show
         plt.show()
+
 
     """
     Compute a color map of the graph edges
@@ -90,7 +104,8 @@ class ASN_BASE:
         max_value = max([self.graph.node[n]['value'] for n in self.graph.nodes()])
         sizes = []
         for n in range(self.node_count):
-            sizes.append(200 + 300*self.graph.node[n]['value']/max_value)
+            perc = self.graph.node[n]['value']/max_value
+            sizes.append(10 + 290*(perc/(0.001 + perc)))
         return sizes
 
 
@@ -113,7 +128,7 @@ class ASN_BASE:
     def _edge_labels(self):
         labels = {}
         for edge in self.graph.edges():
-            labels[edge] = self.graph.edge[edge[0]][edge[1]]['trigger']
+            labels[edge] = self.graph.edge[edge[0]][edge[1]]['trigger']/self.graph.edge[edge[0]][edge[1]]['factor']
         return labels
 
     """
@@ -139,7 +154,7 @@ class ASN_BASE:
             parent_node = current_states_hash.index(parent_state.hash())
             edge = (parent_node, self.end_node)
             if edge not in self.graph.edges():
-                self.graph.add_edge(edge[0], edge[1], weight=1, trigger=event)
+                self.graph.add_edge(edge[0], edge[1], weight=1, factor = 1, trigger=event)
         # relabel the nodes to match the new structure
         self._relabel_nodes()
         return self
@@ -186,7 +201,7 @@ class ASN_BASE:
         new_node = current_states_hash.index(new_state.hash())
         edge = (parent_node, new_node)
         if edge not in self.graph.edges():
-                self.graph.add_edge(edge[0], edge[1], weight=1, trigger=event)
+                self.graph.add_edge(edge[0], edge[1], weight=1, factor=1, trigger=event)
         # update latest_state
         self.latest_state = new_state.copy()
 
@@ -223,6 +238,19 @@ class ASN_BASE:
         self.graph = nx.relabel_nodes(self.graph, node_remap)
         # update end node id
         self.end_node = self.node_count - 1
+        # set edge weights
+        self._set_edge_weights()
+
+    """
+    Set the edge weights based on their number
+    of parent nodes
+    """
+    def _set_edge_weights(self):
+        for n in range(self.end_node,0,-1):
+            pred = self.graph.predecessors(n)
+            n_pred = len(list(pred))
+            for p in pred:
+                self.graph.edge[p][n]['factor'] = 1/n_pred
 
 
     """

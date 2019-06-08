@@ -2,6 +2,9 @@ from ASN_BASE import *
 from ASN_RUN import *
 from kitchen_objects import *
 from sequence_generator import *
+import matplotlib.pyplot as plt
+
+plt.ion()
 
 o = Objects()
 
@@ -12,7 +15,8 @@ MakeCoffee.add_step([(o["LECHE"].MOVING,0.5,1), (o["CAFE"].MOVING,0.5,1)])
 MakeCoffee.add_step([(o["LECHE"].AWAY,1.5,2), (o["CAFE"].AWAY,1.5,2)])
 MakeCoffee.add_step((o["TAZA"].PRESENT,3.5,4))
 """
-MakeCoffee.add_step([(o["LECHE"].AWAY,1.5,2), (o["CAFE"].AWAY,1.5,2),(o["LECHE"].AWAY,1.5,2), (o["CAFE"].AWAY,1.5,2),(o["LECHE"].AWAY,1.5,2), (o["CAFE"].AWAY,1.5,2)])
+MakeCoffee.add_step([(o["LECHE"].PRESENT,0,0), (o["CAFE"].PRESENT,1.5,2)])
+MakeCoffee.add_step([(o["LECHE"].PRESENT,1.5,2), (o["CAFE"].PRESENT,1.5,2),(o["LECHE"].PRESENT,1.5,2), (o["CAFE"].PRESENT,1.5,2)])
 
 """
 while len(list(nx.all_simple_paths(G.graph,0,G.end_node))) < MakeCoffee.variations():
@@ -38,11 +42,20 @@ G.plot()
 G.export()
 
 G2 = ASN_RUN()
+G3 = ASN_RUN("ASN_EXPORT_1.yaml")
 
-G2.plot()
+plt.figure(1)
+G2.plot(1)
+plt.figure(2)
+G3.plot(2)
 
 seq = MakeCoffee.generate()
-for event, dt, all_events in seq:
+for event, dt, past_event in seq:
     print(event)
-    G2.update([event], dt)
-    G2.plot()
+    G2.update(past_event, dt)
+    G3.update(past_event, dt)
+    plt.pause(0.1)
+    
+
+plt.ioff()
+plt.show()
