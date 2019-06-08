@@ -53,7 +53,7 @@ class ASN_BASE(object):
         nx.draw(self.graph, labels=self._node_label_map(), font_color='k', pos=self._node_position(), node_color=self._node_color_map(), node_size=self._node_size_map(), edge_color=self._edge_color_map(), with_labels=True, font_weight='bold')
         nx.draw_networkx_edge_labels(self.graph, pos=self._node_position(), edge_labels=self._edge_labels())
         # show
-        plt.pause(0.0001)
+        #plt.pause(0.0001)
         plt.show()
 
 

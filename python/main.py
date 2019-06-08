@@ -3,6 +3,7 @@ from ASN_RUN import *
 from kitchen_objects import *
 from sequence_generator import *
 import matplotlib.pyplot as plt
+import random as rn
 
 o = KitchenObjects()
 
@@ -53,13 +54,25 @@ for action in MasterSequences.keys():
     run_a2sn.inherit(A2SN_pool[action])
     A2SN_pool[action] = run_a2sn
 
-# Plot just for visualization
+# Plot for visualization and for linking to figure
+fig = 1
 for action in A2SN_pool.keys():
-    A2SN_pool[action].plot(1)
-    print(type(A2SN_pool[action]))
-    plt.figure(1).suptitle(action)
-    plt.ioff()
-    plt.show()
+    A2SN_pool[action].plot(fig)
+    fig += 1
+
+# Test the program
+action = rn.choice(list(MasterSequences.keys()))
+sequence_generator = rn.choice(MasterSequences[action])
+seq = sequence_generator.generate()
+print(action)
+for event, dt, past_events in seq:
+    print(event)
+    for A2SN in A2SN_pool.values():
+        A2SN.update(past_events, dt)
+    plt.pause(0.1)
+
+plt.ioff()
+plt.show()
 
 """
 while len(list(nx.all_simple_paths(G.graph,0,G.end_node))) < MakeCoffee.variations():

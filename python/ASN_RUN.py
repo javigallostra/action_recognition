@@ -52,7 +52,7 @@ class ASN_RUN(ASN_BASE):
                 # update node values in graph (first decay, then input messages)
                 for node in range(self.node_count):
                     self.graph.node[node]['value'] *= self.decay_factor
-                    if node in add_values.keys():
+                    if node in messages.keys():
                         self.graph.node[node]['value'] += sum(messages[node])
                         #################
                         # SUM OR MAX???
