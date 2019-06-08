@@ -38,10 +38,10 @@ class State:
             diff = 0
             for event in list(subs_state.state_dict.keys()):
                 if event not in list(self.state_dict.keys()):
-                    print("Event " + str(event) + "is not in the left hand operator of the substraction.")
+                    print("Event " + str(event) + " is not in the left hand operator of the substraction.")
                     return -1
                 elif subs_state.state_dict[event] > self.state_dict[event]:
-                    print("Event " + str(event) + "occurs more times in the right hand operator of the substraction.")
+                    print("Event " + str(event) + " occurs more times in the right hand operator of the substraction.")
                     return -1
                 else:
                     diff = self.state_dict[event] - subs_state.state_dict[event]
@@ -51,7 +51,7 @@ class State:
                     elif diff == 1:
                         continue
                     else:
-                        print("Event " + str(event) + "occurs at least two times more in the left hand operator.")
+                        print("Event " + str(event) + " occurs at least two times more in the left hand operator.")
                         return -1
         # check that only one event is left
         if len(curr_keys) != 1:

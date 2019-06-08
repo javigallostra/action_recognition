@@ -128,7 +128,7 @@ class ASN_BASE(object):
     def _edge_labels(self):
         labels = {}
         for edge in self.graph.edges():
-            labels[edge] = self.graph.edge[edge[0]][edge[1]]['trigger']/self.graph.edge[edge[0]][edge[1]]['factor']
+            labels[edge] = self.graph.edge[edge[0]][edge[1]]['trigger']
         return labels
 
     """
@@ -248,7 +248,7 @@ class ASN_BASE(object):
     def _set_edge_weights(self):
         for n in range(self.end_node,0,-1):
             pred = self.graph.predecessors(n)
-            n_pred = len(list(pred))
+            n_pred = len(pred)
             for p in pred:
                 self.graph.edge[p][n]['factor'] = 1/n_pred
 

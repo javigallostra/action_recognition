@@ -3,20 +3,15 @@ from ASN_RUN import *
 from kitchen_objects import *
 from sequence_generator import *
 import matplotlib.pyplot as plt
-
-plt.ion()
-
 o = Objects()
 
-MakeCoffee = SequenceGenerator()
-"""
-MakeCoffee.add_step([(o["LECHE"].PRESENT,0.5,1), (o["CAFE"].PRESENT,0.5,1), (o["TAZA"].PRESENT,0.5,1)])
-MakeCoffee.add_step([(o["LECHE"].MOVING,0.5,1), (o["CAFE"].MOVING,0.5,1)])
-MakeCoffee.add_step([(o["LECHE"].AWAY,1.5,2), (o["CAFE"].AWAY,1.5,2)])
-MakeCoffee.add_step((o["TAZA"].PRESENT,3.5,4))
-"""
-MakeCoffee.add_step([(o["LECHE"].PRESENT,0,0), (o["CAFE"].PRESENT,1.5,2)])
-MakeCoffee.add_step([(o["LECHE"].PRESENT,1.5,2), (o["CAFE"].PRESENT,1.5,2),(o["LECHE"].PRESENT,1.5,2), (o["CAFE"].PRESENT,1.5,2)])
+MakeCoffee1 = SequenceGenerator()
+MakeCoffee1.add_step([(o["marcillacafe"].PRESENT,1.5,2), (o["lletnostra"].PRESENT,1.5,2), (o["mug"].PRESENT,1.5,2), (o["acorsugar"].PRESENT,1.5,2)])
+MakeCoffee1.add_step([(o["marcillacafe"].MOVING,1.5,2), (o["lletnostra"].MOVING,1.5,2), (o["acorsugar"].MOVING,1.5,2)])
+
+MakeCoffee2 = SequenceGenerator()
+MakeCoffee2.add_step([(o["nescafe"].PRESENT,1.5,2), (o["lletnostra"].PRESENT,1.5,2), (o["mug"].PRESENT,1.5,2), (o["acorsugar"].PRESENT,1.5,2)])
+MakeCoffee2.add_step([(o["nescafe"].MOVING,1.5,2), (o["lletnostra"].MOVING,1.5,2), (o["acorsugar"].MOVING,1.5,2)])
 
 """
 while len(list(nx.all_simple_paths(G.graph,0,G.end_node))) < MakeCoffee.variations():
@@ -29,33 +24,49 @@ while len(list(nx.all_simple_paths(G.graph,0,G.end_node))) < MakeCoffee.variatio
 """
 G = ASN_BASE()
 i = 0
-while i<100:
-    seq = MakeCoffee.generate()
+while i<50:
+    seq1 = MakeCoffee1.generate()
+    seq2 = MakeCoffee2.generate()
     G2 = ASN_BASE()
-    for event, dt, all_events in seq:
+    G3 = ASN_BASE()
+    for event, dt, all_events in seq1:
         G2.add_node_by_event(event)
+    for event, dt, all_events in seq2:
+        G3.add_node_by_event(event)
     G2.end()
+    G3.end()
     G += G2
+    G += G3
     i+=1
+
+G2.plot()
+plt.ioff()
+plt.show()
+G2 += G2
+G2.plot()
+plt.ioff()
+plt.show()
+
+
+
 G.plot()
+plt.ioff()
+plt.show()
 
 G.export()
 
 G2 = ASN_RUN()
-G3 = ASN_RUN("ASN_EXPORT_1.yaml")
 
+plt.ion()
 plt.figure(1)
 G2.plot(1)
-plt.figure(2)
-G3.plot(2)
 
-seq = MakeCoffee.generate()
-for event, dt, past_event in seq:
+seq = MakeCoffee1.generate()
+for event, dt, past_events in seq:
     print(event)
-    G2.update(past_event, dt)
-    G3.update(past_event, dt)
+    G2.update(past_events, dt)
     plt.pause(0.1)
-    
+
 
 plt.ioff()
 plt.show()

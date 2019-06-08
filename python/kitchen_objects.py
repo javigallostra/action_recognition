@@ -3,7 +3,7 @@
 class KitchenObject:
 
     id_dict = {}
-    
+
     def __init__(self, object_name, object_id):
         # default values
         self.id = 0
@@ -27,7 +27,7 @@ class Objects:
 
     def __init__(self):
         # Name list and dictionary
-        self.object_names = ["CAFE","LECHE","AZUCAR","TAZA"] # read from file?
+        self.object_names = ["colacao","marcillacafe","sugar","nescafe","acorsugar","pascual","nesquik","yogurt","mug","lletnostra"] # TOO read from file?
         self.objects = {}
         # Fill dictionary
         self.object_id = 0
@@ -44,6 +44,3 @@ class Objects:
         else:
             self.object_id += 10
             self.objects[name] = KitchenObject(object_name, self.object_id)
-            
-            
-

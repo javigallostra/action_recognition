@@ -4,94 +4,419 @@ adj: &id001
     1: &id003
       color: !!python/tuple [0.0, 0.0, 0.0]
       factor: 1.0
-      trigger: 11
+      trigger: 51
       weight: 1
     2: &id004
       color: !!python/tuple [0.0, 0.0, 0.0]
       factor: 1.0
       trigger: 21
       weight: 1
-  1:
     3: &id005
       color: !!python/tuple [0.0, 0.0, 0.0]
-      factor: 0.5
-      trigger: 21
+      factor: 1.0
+      trigger: 101
       weight: 1
-  2:
-    3: &id006
-      color: !!python/tuple [0.0, 0.0, 0.0]
-      factor: 0.5
-      trigger: 11
-      weight: 1
-  3:
-    4: &id007
+    4: &id006
       color: !!python/tuple [0.0, 0.0, 0.0]
       factor: 1.0
-      trigger: 21
+      trigger: 91
       weight: 1
-    5: &id008
+    5: &id007
       color: !!python/tuple [0.0, 0.0, 0.0]
       factor: 1.0
-      trigger: 11
+      trigger: 41
       weight: 1
-  4:
-    6: &id009
-      color: !!python/tuple [0.0, 0.0, 0.0]
-      factor: 0.5
-      trigger: 11
-      weight: 1
-    7: &id011
-      color: !!python/tuple [0.0, 0.0, 0.0]
-      factor: 1.0
-      trigger: 21
-      weight: 1
-  5:
-    6: &id010
+  1:
+    6: &id008
       color: !!python/tuple [0.0, 0.0, 0.0]
       factor: 0.5
       trigger: 21
+      weight: 1
+    7: &id010
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 41
       weight: 1
     8: &id012
       color: !!python/tuple [0.0, 0.0, 0.0]
-      factor: 1.0
-      trigger: 11
-      weight: 1
-  6:
-    9: &id013
-      color: !!python/tuple [0.0, 0.0, 0.0]
       factor: 0.5
-      trigger: 11
+      trigger: 101
       weight: 1
-    10: &id015
-      color: !!python/tuple [0.0, 0.0, 0.0]
-      factor: 0.5
-      trigger: 21
-      weight: 1
-  7:
-    10: &id016
-      color: !!python/tuple [0.0, 0.0, 0.0]
-      factor: 0.5
-      trigger: 11
-      weight: 1
-  8:
     9: &id014
       color: !!python/tuple [0.0, 0.0, 0.0]
       factor: 0.5
-      trigger: 21
+      trigger: 91
       weight: 1
-  9:
-    11: &id017
+  2:
+    6: &id009
       color: !!python/tuple [0.0, 0.0, 0.0]
       factor: 0.5
-      trigger: 21
+      trigger: 51
       weight: 1
-  10:
+    10: &id016
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 101
+      weight: 1
     11: &id018
       color: !!python/tuple [0.0, 0.0, 0.0]
       factor: 0.5
-      trigger: 11
+      trigger: 91
       weight: 1
-  11: {}
+  3:
+    8: &id013
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 51
+      weight: 1
+    10: &id017
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 21
+      weight: 1
+    12: &id020
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 91
+      weight: 1
+    13: &id022
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 41
+      weight: 1
+  4:
+    9: &id015
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 51
+      weight: 1
+    11: &id019
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 21
+      weight: 1
+    12: &id021
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 101
+      weight: 1
+    14: &id024
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 41
+      weight: 1
+  5:
+    7: &id011
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 51
+      weight: 1
+    13: &id023
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 101
+      weight: 1
+    14: &id025
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 91
+      weight: 1
+  6:
+    15: &id026
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 91
+      weight: 1
+    16: &id029
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 101
+      weight: 1
+  7:
+    17: &id032
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 91
+      weight: 1
+    18: &id035
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 101
+      weight: 1
+  8:
+    16: &id030
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 21
+      weight: 1
+    18: &id036
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 41
+      weight: 1
+    19: &id038
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 91
+      weight: 1
+  9:
+    15: &id027
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 21
+      weight: 1
+    17: &id033
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 41
+      weight: 1
+    19: &id039
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 101
+      weight: 1
+  10:
+    16: &id031
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 51
+      weight: 1
+    20: &id041
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 91
+      weight: 1
+  11:
+    15: &id028
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 51
+      weight: 1
+    20: &id042
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 101
+      weight: 1
+  12:
+    19: &id040
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 51
+      weight: 1
+    20: &id043
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 21
+      weight: 1
+    21: &id044
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 41
+      weight: 1
+  13:
+    18: &id037
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 51
+      weight: 1
+    21: &id045
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 91
+      weight: 1
+  14:
+    17: &id034
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 51
+      weight: 1
+    21: &id046
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.3333333333333333
+      trigger: 101
+      weight: 1
+  15:
+    22: &id047
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.25
+      trigger: 101
+      weight: 1
+  16:
+    22: &id048
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.25
+      trigger: 91
+      weight: 1
+  17:
+    23: &id051
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.25
+      trigger: 101
+      weight: 1
+  18:
+    23: &id052
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.25
+      trigger: 91
+      weight: 1
+  19:
+    22: &id049
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.25
+      trigger: 21
+      weight: 1
+    23: &id053
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.25
+      trigger: 41
+      weight: 1
+  20:
+    22: &id050
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.25
+      trigger: 51
+      weight: 1
+  21:
+    23: &id054
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.25
+      trigger: 51
+      weight: 1
+  22:
+    24: &id055
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 1.0
+      trigger: 102
+      weight: 1
+    25: &id056
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 1.0
+      trigger: 22
+      weight: 1
+    26: &id057
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 1.0
+      trigger: 52
+      weight: 1
+  23:
+    27: &id058
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 1.0
+      trigger: 52
+      weight: 1
+    28: &id059
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 1.0
+      trigger: 102
+      weight: 1
+    29: &id060
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 1.0
+      trigger: 42
+      weight: 1
+  24:
+    30: &id061
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 22
+      weight: 1
+    31: &id063
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 52
+      weight: 1
+  25:
+    30: &id062
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 102
+      weight: 1
+    32: &id065
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 52
+      weight: 1
+  26:
+    31: &id064
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 102
+      weight: 1
+    32: &id066
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 22
+      weight: 1
+  27:
+    33: &id067
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 102
+      weight: 1
+    34: &id069
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 42
+      weight: 1
+  28:
+    33: &id068
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 52
+      weight: 1
+    35: &id071
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 42
+      weight: 1
+  29:
+    34: &id070
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 52
+      weight: 1
+    35: &id072
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.5
+      trigger: 102
+      weight: 1
+  30:
+    36: &id073
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.16666666666666666
+      trigger: 52
+      weight: 1
+  31:
+    36: &id074
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.16666666666666666
+      trigger: 22
+      weight: 1
+  32:
+    36: &id075
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.16666666666666666
+      trigger: 102
+      weight: 1
+  33:
+    36: &id076
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.16666666666666666
+      trigger: 42
+      weight: 1
+  34:
+    36: &id077
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.16666666666666666
+      trigger: 102
+      weight: 1
+  35:
+    36: &id078
+      color: !!python/tuple [0.0, 0.0, 0.0]
+      factor: 0.16666666666666666
+      trigger: 52
+      weight: 1
+  36: {}
 adjlist_dict_factory: &id002 !!python/name:builtins.dict ''
 edge: *id001
 edge_attr_dict_factory: *id002
@@ -104,70 +429,220 @@ node:
       state_dict: {}
     value: 1
   1:
-    color: !!python/tuple [0.39363892763324443, 0.0, 0.5623413251903491]
+    color: !!python/tuple [0.37589359259476096, 0.0, 0.4111336169005197]
     end: false
     state: !!python/object:state.State
-      state_dict: {11: 1}
+      state_dict: {51: 1}
     value: 0.0
   2:
-    color: !!python/tuple [0.26749612199056905, 0.0, 0.668740304976422]
+    color: !!python/tuple [0.40510764716034686, 0.0, 0.48892302243490104]
     end: false
     state: !!python/object:state.State
       state_dict: {21: 1}
     value: 0.0
   3:
-    color: !!python/tuple [0.07400828044922826, 0.0, 0.7400828044922853]
+    color: !!python/tuple [0.40194682844006946, 0.0, 0.5410822690539396]
     end: false
     state: !!python/object:state.State
-      state_dict: {11: 1, 21: 1}
+      state_dict: {101: 1}
     value: 0.0
   4:
+    color: !!python/tuple [0.3820830557219724, 0.0, 0.5814307369682193]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {91: 1}
+    value: 0.0
+  5:
+    color: !!python/tuple [0.3513075159721509, 0.0, 0.6147881529512643]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {41: 1}
+    value: 0.0
+  6:
+    color: !!python/tuple [0.31253717230665573, 0.0, 0.6434588841607617]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 51: 1}
+    value: 0.0
+  7:
+    color: !!python/tuple [0.26749612199056905, 0.0, 0.668740304976422]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {41: 1, 51: 1}
+    value: 0.0
+  8:
+    color: !!python/tuple [0.2173102074892199, 0.0, 0.691441569283882]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {51: 1, 101: 1}
+    value: 0.0
+  9:
+    color: !!python/tuple [0.16276670015342998, 0.0, 0.7121043131712587]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {51: 1, 91: 1}
+    value: 0.0
+  10:
+    color: !!python/tuple [0.10444434938700316, 0.0, 0.7311104457090247]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 101: 1}
+    value: 0.0
+  11:
+    color: !!python/tuple [0.042785155181899404, 0.0, 0.7487402156832422]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 91: 1}
+    value: 0.0
+  12:
+    color: !!python/tuple [0.0, 0.021863025235876764, 0.7652058832556895]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {91: 1, 101: 1}
+    value: 0.0
+  13:
+    color: !!python/tuple [0.0, 0.08921970315712523, 0.7806724026248424]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {41: 1, 101: 1}
+    value: 0.0
+  14:
     color: !!python/tuple [0.0, 0.15905414575341026, 0.7952707287670506]
     end: false
     state: !!python/object:state.State
-      state_dict: {11: 1, 21: 2}
+      state_dict: {41: 1, 91: 1}
     value: 0.0
-  5:
-    color: !!python/tuple [0.0, 0.4204482076268577, 0.8408964152537146]
+  15:
+    color: !!python/tuple [0.0, 0.23117334616292023, 0.8091067115702212]
     end: false
     state: !!python/object:state.State
-      state_dict: {11: 2, 21: 1}
+      state_dict: {21: 1, 51: 1, 91: 1}
     value: 0.0
-  6:
+  16:
+    color: !!python/tuple [0.0, 0.30541354398324283, 0.8222672338010394]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 51: 1, 101: 1}
+    value: 0.0
+  17:
+    color: !!python/tuple [0.0, 0.38163408633959556, 0.8348245638678642]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {41: 1, 51: 1, 91: 1}
+    value: 0.0
+  18:
+    color: !!python/tuple [0.0, 0.4597128800314387, 0.8468395158473866]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {41: 1, 51: 1, 101: 1}
+    value: 0.0
+  19:
+    color: !!python/tuple [0.0, 0.5395429543110448, 0.8583637909493894]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {51: 1, 91: 1, 101: 1}
+    value: 0.0
+  20:
+    color: !!python/tuple [0.0, 0.6210298170642731, 0.8694417438899827]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 91: 1, 101: 1}
+    value: 0.0
+  21:
     color: !!python/tuple [0.0, 0.7040893894347146, 0.8801117367933934]
     end: false
     state: !!python/object:state.State
-      state_dict: {11: 2, 21: 2}
+      state_dict: {41: 1, 91: 1, 101: 1}
     value: 0.0
-  7:
-    color: !!python/tuple [0.0, 0.9146912192286945, 0.823222097305825]
+  22:
+    color: !!python/tuple [0.0, 0.788646369861563, 0.8904071917791836]
     end: false
     state: !!python/object:state.State
-      state_dict: {11: 1, 21: 3}
+      state_dict: {21: 1, 51: 1, 91: 1, 101: 1}
     value: 0.0
-  8:
+  23:
+    color: !!python/tuple [0.0, 0.8746329220854212, 0.9003574197938159]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {41: 1, 51: 1, 91: 1, 101: 1}
+    value: 0.0
+  24:
+    color: !!python/tuple [0.0, 0.9099882808096075, 0.8579889504776297]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 51: 1, 91: 1, 101: 1, 102: 1}
+    value: 0.0
+  25:
+    color: !!python/tuple [0.0, 0.9193227152249185, 0.7879908987642155]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 22: 1, 51: 1, 91: 1, 101: 1}
+    value: 0.0
+  26:
+    color: !!python/tuple [0.0, 0.9283811756877315, 0.7161797641019643]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 51: 1, 52: 1, 91: 1, 101: 1}
+    value: 0.0
+  27:
+    color: !!python/tuple [0.0, 0.9371819810760768, 0.642639072737881]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {41: 1, 51: 1, 52: 1, 91: 1, 101: 1}
+    value: 0.0
+  28:
     color: !!python/tuple [0.0, 0.9457416090031758, 0.5674449654019051]
     end: false
     state: !!python/object:state.State
-      state_dict: {11: 3, 21: 1}
+      state_dict: {41: 1, 51: 1, 91: 1, 101: 1, 102: 1}
     value: 0.0
-  9:
-    color: !!python/tuple [0.0, 0.9740037464252967, 0.29220112392758885]
+  29:
+    color: !!python/tuple [0.0, 0.9540749393170327, 0.49066711164875965]
     end: false
     state: !!python/object:state.State
-      state_dict: {11: 3, 21: 2}
+      state_dict: {41: 1, 42: 1, 51: 1, 91: 1, 101: 1}
     value: 0.0
-  10:
+  30:
+    color: !!python/tuple [0.0, 0.9621954581957615, 0.412369482083898]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 22: 1, 51: 1, 91: 1, 101: 1, 102: 1}
+    value: 0.0
+  31:
+    color: !!python/tuple [0.0, 0.9701154303042088, 0.33261100467572885]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 51: 1, 52: 1, 91: 1, 101: 1, 102: 1}
+    value: 0.0
+  32:
+    color: !!python/tuple [0.0, 0.9778460448698021, 0.2514461258236634]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {21: 1, 22: 1, 51: 1, 52: 1, 91: 1, 101: 1}
+    value: 0.0
+  33:
+    color: !!python/tuple [0.0, 0.9853975403131593, 0.16892529262511286]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {41: 1, 51: 1, 52: 1, 91: 1, 101: 1, 102: 1}
+    value: 0.0
+  34:
+    color: !!python/tuple [0.0, 0.9927793111307076, 0.08509536952548892]
+    end: false
+    state: !!python/object:state.State
+      state_dict: {41: 1, 42: 1, 51: 1, 52: 1, 91: 1, 101: 1}
+    value: 0.0
+  35:
     color: !!python/tuple [0.0, 1.0, 0.0]
     end: false
     state: !!python/object:state.State
-      state_dict: {11: 2, 21: 3}
+      state_dict: {41: 1, 42: 1, 51: 1, 91: 1, 101: 1, 102: 1}
     value: 0.0
-  11:
-    color: !!python/tuple [0.3072341067253338, 1.0241136890844451, 0.0]
+  36:
+    color: !!python/tuple [0.08632007807238584, 1.0070675775111717, 0.0]
     end: true
     state: !!python/object:state.State
-      state_dict: {11: 3, 21: 3}
+      state_dict: {21: 1, 22: 1, 51: 1, 52: 1, 91: 1, 101: 1, 102: 1}
     value: 0.0
 node_dict_factory: *id002
 pred:
@@ -177,26 +652,111 @@ pred:
   2:
     0: *id004
   3:
-    1: *id005
-    2: *id006
+    0: *id005
   4:
-    3: *id007
+    0: *id006
   5:
-    3: *id008
+    0: *id007
   6:
-    4: *id009
-    5: *id010
+    1: *id008
+    2: *id009
   7:
-    4: *id011
+    1: *id010
+    5: *id011
   8:
-    5: *id012
+    1: *id012
+    3: *id013
   9:
-    6: *id013
-    8: *id014
+    1: *id014
+    4: *id015
   10:
-    6: *id015
-    7: *id016
+    2: *id016
+    3: *id017
   11:
-    9: *id017
-    10: *id018
+    2: *id018
+    4: *id019
+  12:
+    3: *id020
+    4: *id021
+  13:
+    3: *id022
+    5: *id023
+  14:
+    4: *id024
+    5: *id025
+  15:
+    6: *id026
+    9: *id027
+    11: *id028
+  16:
+    6: *id029
+    8: *id030
+    10: *id031
+  17:
+    7: *id032
+    9: *id033
+    14: *id034
+  18:
+    7: *id035
+    8: *id036
+    13: *id037
+  19:
+    8: *id038
+    9: *id039
+    12: *id040
+  20:
+    10: *id041
+    11: *id042
+    12: *id043
+  21:
+    12: *id044
+    13: *id045
+    14: *id046
+  22:
+    15: *id047
+    16: *id048
+    19: *id049
+    20: *id050
+  23:
+    17: *id051
+    18: *id052
+    19: *id053
+    21: *id054
+  24:
+    22: *id055
+  25:
+    22: *id056
+  26:
+    22: *id057
+  27:
+    23: *id058
+  28:
+    23: *id059
+  29:
+    23: *id060
+  30:
+    24: *id061
+    25: *id062
+  31:
+    24: *id063
+    26: *id064
+  32:
+    25: *id065
+    26: *id066
+  33:
+    27: *id067
+    28: *id068
+  34:
+    27: *id069
+    29: *id070
+  35:
+    28: *id071
+    29: *id072
+  36:
+    30: *id073
+    31: *id074
+    32: *id075
+    33: *id076
+    34: *id077
+    35: *id078
 succ: *id001
