@@ -2,8 +2,8 @@ import random as rn
 
 class SequenceGenerator:
 
-    def __init__(self):
-        self.step_list = []
+    def __init__(self, steps=[]):
+        self.step_list = list(steps)
 
     def add_step(self, step):
         self.step_list.append(step)
@@ -32,6 +32,11 @@ class SequenceGenerator:
                             del past_events[i]
                 if event not in past_events:
                     past_events.append(event)
-
         # return
         return sequence
+
+    def empty(self):
+        self.__init__()
+
+    def copy(self):
+        return SequenceGenerator(self.step_list)

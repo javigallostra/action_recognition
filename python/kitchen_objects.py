@@ -23,7 +23,7 @@ class KitchenObject:
             self.MOVING = self.id + 2
             self.AWAY = self.id
 
-class Objects:
+class KitchenObjects:
 
     def __init__(self):
         # Name list and dictionary
