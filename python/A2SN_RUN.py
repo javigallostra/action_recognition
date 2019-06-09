@@ -8,6 +8,9 @@ update the node values with occurred events
 """
 class A2SN_RUN(A2SN_BASE):
 
+    decay_factor = 0.95
+    tick = 0.1
+
     """
     Call A2SN_BASE init function, load graph data from file
     (only if specified), and set variables needed for running
@@ -23,8 +26,6 @@ class A2SN_RUN(A2SN_BASE):
             print("         Call load(filename), inherit(A2SN) or create the A2SN from scratch.")
         # properties
         self.max_value = 0
-        self.decay_factor = 0.95
-        self.tick = 0.1
         self.ti = 0
         self.active_events = []
         self.update_thread = 0
@@ -75,10 +76,10 @@ class A2SN_RUN(A2SN_BASE):
             self.thread_lock.release()
             dt = time.time() - ti
             # check that dt < clock tick and wait/continue
-            if (dt > self.tick):
+            if (dt > A2SN_RUN.tick):
                 continue
             else:
-                time.sleep(self.tick - dt)
+                time.sleep(A2SN_RUN.tick - dt)
                 continue
     """
     Update the node values
@@ -101,7 +102,7 @@ class A2SN_RUN(A2SN_BASE):
                     #################
                     # SUM OR MAX???
                     #################
-                self.graph.node[node]['value'] *= self.decay_factor
+                self.graph.node[node]['value'] *= A2SN_RUN.decay_factor
                 ######################
                 self.max_value = max(self.max_value, self.graph.node[node]['value']/self.depth_map[node])
                 ######################
