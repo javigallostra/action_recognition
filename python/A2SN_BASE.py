@@ -25,6 +25,8 @@ class A2SN_BASE(object):
         self.end_node = 0
         # keep track of current state
         self.latest_state = State([])
+        # keep a depth node map
+        self.depth_map = {}
         # figure to plot to and title
         self.figure = 1
         self.fig_title = ""
@@ -97,10 +99,11 @@ class A2SN_BASE(object):
     Generate a map of node sizes according to their value
     """
     def __node_size_map(self):
-        max_value = max([self.graph.node[n]['value'] for n in self.graph.nodes()])
+        values = [self.graph.node[n]['value']/self.depth_map[n] for n in self.graph.nodes()]
+        max_value = max(values)
         sizes = []
-        for n in range(self.node_count):
-            perc = self.graph.node[n]['value']/max_value
+        for value in values:
+            perc = value/max_value
             sizes.append(10 + 290*(perc/(0.001 + perc)))
         return sizes
 
@@ -191,14 +194,18 @@ class A2SN_BASE(object):
     """
     def __relabel_nodes(self):
         # generate a relabel map based on node depth
+        # and udpate depth_map
         count = 0
         node_remap = {}
         mapping = self.__node_depth_map()
+        self.depth_map = {}
         for depth in range(len(mapping)):
             depth_elems = mapping[depth]
             for node in depth_elems:
                 node_remap[node] = count
+                self.depth_map[count] = depth
                 count += 1
+        self.depth_map[0] = 1
         # relabel nodes
         self.graph = nx.relabel_nodes(self.graph, node_remap)
         # update end node id
@@ -249,6 +256,8 @@ class A2SN_BASE(object):
         self.end_node = self.node_count - 1
         # update latest_state
         self.latest_state = self.graph.node[self.end_node]['state'].copy()
+        # Fix any errors
+        self.__relabel_nodes()
 
     """
     Inherit graph and data from an existing A2SN.
@@ -262,3 +271,5 @@ class A2SN_BASE(object):
         self.end_node = self.node_count - 1
         # update latest_state
         self.latest_state = self.graph.node[self.end_node]['state'].copy()
+        # Fix any errors
+        self.__relabel_nodes()

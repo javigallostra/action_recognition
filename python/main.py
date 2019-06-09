@@ -97,7 +97,7 @@ for A2SN in A2SN_pool.values():
 print(action)
 ti = time.time()
 for new_event, all_events, dt, te in seq:
-    print(new_event)
+    print("******************************** " + str(new_event))
     for A2SN in A2SN_pool.values():
         A2SN.update_events(all_events)
     #plt.show()
@@ -114,7 +114,7 @@ plt.show()
 
 for A2SN in A2SN_pool.values():
     A2SN.stop()
-    
+
 """
 
 for action in A2SN_pool.keys()

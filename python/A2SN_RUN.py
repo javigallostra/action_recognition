@@ -22,6 +22,7 @@ class A2SN_RUN(A2SN_BASE):
             print("WARNING: creating RUN A2SN without a filename to load.")
             print("         Call load(filename), inherit(A2SN) or create the A2SN from scratch.")
         # properties
+        self.max_value = 0
         self.decay_factor = 0.95
         self.tick = 0.1
         self.ti = 0
@@ -70,6 +71,7 @@ class A2SN_RUN(A2SN_BASE):
             ti = time.time()
             self.thread_lock.acquire()
             self.__update()
+            print(self.max_value)
             self.thread_lock.release()
             dt = time.time() - ti
             # check that dt < clock tick and wait/continue
@@ -82,6 +84,7 @@ class A2SN_RUN(A2SN_BASE):
     Update the node values
     """
     def __update(self):
+        self.max_value = 0
         messages = {}
         # for each active event
         for event in self.active_events:
@@ -99,5 +102,8 @@ class A2SN_RUN(A2SN_BASE):
                     # SUM OR MAX???
                     #################
                 self.graph.node[node]['value'] *= self.decay_factor
+                ######################
+                self.max_value = max(self.max_value, self.graph.node[node]['value']/self.depth_map[node])
+                ######################
         # plot at each tick
-        self.plot()
+        #self.plot()
