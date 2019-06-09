@@ -56,6 +56,7 @@ for milk in milk_options:
 # Generate A2SN_BASE for each action
 # (repeat each master sequence n times)
 # then convert to A2SN_RUN
+plt.ion()
 n = 1
 A2SN_pool = {}
 for action in MasterSequences.keys():
@@ -64,8 +65,8 @@ for action in MasterSequences.keys():
         for i in range(n):
             sequence = master_sequence.generate()
             A2SN = A2SN_BUILD()
-            for event, dt in sequence:
-                A2SN.add_node_by_event(event)
+            for new_event, all_events, dt, te in sequence:
+                A2SN.add_node_by_event(new_event)
             A2SN.end()
             A2SN_pool[action] += A2SN
     run_a2sn = A2SN_RUN()
@@ -77,33 +78,59 @@ fig = 1
 for action in A2SN_pool.keys():
     A2SN_pool[action].plot(fig, action)
     fig += 1
+
+plt.ion()
 plt.show()
 
 plt.ion()
+##################
 # Test the program
+
+# 1 - generate sequence
 action = rn.choice(list(MasterSequences.keys()))
 sequence_generator = rn.choice(MasterSequences[action])
 seq = sequence_generator.generate()
+# 2 - start A2SNs
+for A2SN in A2SN_pool.values():
+    A2SN.start()
+# 3 - run sequence
 print(action)
-for event, dt in seq:
-    print(event)
+ti = time.time()
+for new_event, all_events, dt, te in seq:
+    print(new_event)
     for A2SN in A2SN_pool.values():
-        A2SN.update(event, dt)
-    plt.show()
-    plt.pause(0.001)
+        A2SN.update_events(all_events)
+    #plt.show()
+    plt.pause(0.0001)
+    timeel = time.time() - ti
+    if (timeel - dt) >= -0.0001:
+        time.sleep(0.0001)
+    else:
+        time.sleep(dt - timeel)
+    ti = time.time()
 
 plt.ioff()
 plt.show()
 
+for A2SN in A2SN_pool.values():
+    A2SN.stop()
+    
 """
+
+for action in A2SN_pool.keys()
+    A2SN_pool[action].start()
+
+A2SN_pool["coffee"].update_events([1,2,3])
+
+time.sleep(1)
+
+A2SN_pool["coffee"].stop()
+
+
 while len(list(nx.all_simple_paths(G.graph,0,G.end_node))) < MakeCoffee.variations():
-    seq = MakeCoffee.generate()
-    G2 = A2SN_BUILD()
-    for state, dt in seq:
-        G2.update(state, dt)
-    G2.finish_action()
-    G.merge_with(G2)
 """
+
+
 """
 G = A2SN_BUILD()
 i = 0
@@ -112,9 +139,9 @@ while i<5:
     seq2 = MakeCoffee2.generate()
     G2 = A2SN_BUILD()
     G3 = A2SN_BUILD()
-    for event, dt, all_events in seq1:
+    for event, dt, te in seq1:
         G2.add_node_by_event(event)
-    for event, dt, all_events in seq2:
+    for event, dt, te in seq2:
         G3.add_node_by_event(event)
     G2.end()
     G3.end()

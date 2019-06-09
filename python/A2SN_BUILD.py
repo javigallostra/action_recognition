@@ -19,15 +19,16 @@ class A2SN_BUILD(A2SN_BASE):
     node and edge from a parent state
     if needed
     """
-    def add_node_by_event(self, event, parent_state = 0):
-        # if parent_state is not given, take our latest state
-        # (for when the graph is being created, not merged)
-        if not isinstance(parent_state, State):
-            parent_state = self.latest_state
-        # generate new state
-        new_state = parent_state.copy() + event
-        # go to add node by state
-        self.add_node_by_state(new_state, parent_state, event)
+    def add_node_by_event(self, event = 0, parent_state = 0):
+        if event:
+            # if parent_state is not given, take our latest state
+            # (for when the graph is being created, not merged)
+            if not isinstance(parent_state, State):
+                parent_state = self.latest_state
+            # generate new state
+            new_state = parent_state.copy() + event
+            # go to add node by state
+            self.add_node_by_state(new_state, parent_state, event)
 
     """
     Used for building the graph
