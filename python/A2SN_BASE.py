@@ -45,7 +45,10 @@ class A2SN_BASE(object):
             if weight > max_w:
                 max_w = weight
             for ni, nf, weight in self.graph.edges(data='weight'):
+                """
                 c = 1 - weight/max_w
+                """
+                c = 0.2
                 rgb = (c, c, c)
                 self.graph.edge[ni][nf]['color'] = rgb
         cmap = [self.graph.edge[edge[0]][edge[1]]['color'] for edge in self.graph.edges()]
@@ -131,7 +134,7 @@ class A2SN_BASE(object):
         plt.clf()
         plt.title(self.fig_title)
         # draw graph
-        nx.draw(self.graph, labels=self.__node_label_map(), font_color='k', pos=self.__node_position(), node_color=self.__node_color_map(), node_size=self.__node_size_map(), edge_color=self.__edge_color_map(), with_labels=True, font_weight='bold')
+        nx.draw(self.graph, labels=self.__node_label_map(), font_color=(0,0,0), pos=self.__node_position(), node_color=self.__node_color_map(), node_size=self.__node_size_map(), edge_color=self.__edge_color_map(), with_labels=True, font_weight='bold')
         nx.draw_networkx_edge_labels(self.graph, pos=self.__node_position(), edge_labels=self.__edge_labels())
 
     #########################

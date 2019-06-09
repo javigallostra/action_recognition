@@ -1,5 +1,5 @@
 class State:
-    def __init__(self, event_list):
+    def __init__(self, event_list=[]):
         self.state_dict = {}
         for event in event_list:
             if event in self.state_dict.keys():
@@ -72,8 +72,8 @@ class State:
 
     """
     Generate a the hash state as an ordered
-    list of 4 digit numbers where the first
-    two digits represent the event occured
+    list of X+2 digit numbers where the first
+    X digits represent the event occured
     and the latter represent its number of occurrences
     """
     def hash(self):
