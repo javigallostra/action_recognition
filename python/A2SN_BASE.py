@@ -15,18 +15,16 @@ class A2SN_BASE(object):
     Create a directed graph, add the first node,
     and initialize A2SN basic variables.
     """
-    def __init__(self):
+    def __init__(self, action_name=""):
         # create graph with start nodes
         self.graph = nx.DiGraph()
-        self.graph.add_node(0, state=State([]), end=False, color=(1,0,0), value=1) # start
+        self.graph.add_node(0, state=State([]), end=False, color=(1,0,0), value=1, depth=1, action=action_name) # start
         # keep track of node count
         self.node_count = 1
         # keep track of end node
         self.end_node = 0
         # keep track of current state
         self.latest_state = State([])
-        # keep a depth node map
-        self.depth_map = {}
         # figure to plot to and title
         self.figure = 1
         self.fig_title = ""
@@ -99,7 +97,7 @@ class A2SN_BASE(object):
     Generate a map of node sizes according to their value
     """
     def __node_size_map(self):
-        values = [self.graph.node[n]['value']/self.depth_map[n] for n in self.graph.nodes()]
+        values = [self.graph.node[n]['value']/self.graph.node[n]['depth'] for n in self.graph.nodes()]
         max_value = max(values)
         sizes = []
         for value in values:
@@ -145,35 +143,6 @@ class A2SN_BASE(object):
     #########################
 
     """
-    Merge the current graph with a different one
-    (currently only works if adding a single-path graph)
-    """
-    def __iadd__(self, A2SN2):
-        new_states = [A2SN2.graph.node[n]['state'] for n in range(1,A2SN2.end_node)]
-        parent_state = State([])
-        # merge all nodes (except for first and last node)
-        for new_state in new_states:
-            self.add_node_by_state(new_state, parent_state)
-            parent_state = new_state.copy()
-        # merge last node
-        new_state = A2SN2.graph.node[A2SN2.end_node]['state']
-        if self.end_node == 0:
-            # case of empty left-hand graph
-            self.add_node_by_state(new_state, parent_state)
-            self.end()
-        else:
-            # normal case: check edge and add if necessary
-            event = new_state - parent_state
-            current_states_hash = [self.graph.node[n]['state'].hash() for n in range(self.node_count)]
-            parent_node = current_states_hash.index(parent_state.hash())
-            edge = (parent_node, self.end_node)
-            if edge not in self.graph.edges():
-                self.graph.add_edge(edge[0], edge[1], weight=1, factor = 1, trigger=event)
-        # relabel the nodes to match the new structure
-        self.__relabel_nodes()
-        return self
-
-    """
     Generate a dictionary containing pairs
     'depth:[nodes in depth]''
     """
@@ -192,46 +161,37 @@ class A2SN_BASE(object):
     their 'depth level', useful after
     merging two graphs
     """
-    def __relabel_nodes(self):
+    def relabel_nodes(self):
         # generate a relabel map based on node depth
-        # and udpate depth_map
+        # and udpate their depth value
         count = 0
         node_remap = {}
         mapping = self.__node_depth_map()
-        self.depth_map = {}
         for depth in range(len(mapping)):
             depth_elems = mapping[depth]
             for node in depth_elems:
                 node_remap[node] = count
-                self.depth_map[count] = depth
+                self.graph.node[node]['depth'] = depth
                 count += 1
-        self.depth_map[0] = 1
+        # Fix depth of node 0
+        self.graph.node[0]['depth'] = 1
         # relabel nodes
         self.graph = nx.relabel_nodes(self.graph, node_remap)
         # update end node id
         self.end_node = self.node_count - 1
         # set edge weights
-        self.__set_edge_weights()
+        self.__set_edge_factors()
 
     """
-    Set the edge weights based on their number
+    Set the edge factors based on their number
     of parent nodes
     """
-    def __set_edge_weights(self):
+    def __set_edge_factors(self):
         for n in range(self.end_node,0,-1):
             pred = self.graph.predecessors(n)
             n_pred = len(pred)
             for p in pred:
                 self.graph.edge[p][n]['factor'] = 1/n_pred
-
-    """
-    End building the graph, setting the
-    latest node to be the end node
-    """
-    def end(self):
-        self.end_node = self.node_count - 1
-        self.graph.node[self.end_node]['end'] = True
-        self.__relabel_nodes()
 
     ###################
     # LOAD AND EXPORT #
@@ -257,7 +217,7 @@ class A2SN_BASE(object):
         # update latest_state
         self.latest_state = self.graph.node[self.end_node]['state'].copy()
         # Fix any errors
-        self.__relabel_nodes()
+        self.relabel_nodes()
 
     """
     Inherit graph and data from an existing A2SN.
@@ -272,4 +232,4 @@ class A2SN_BASE(object):
         # update latest_state
         self.latest_state = self.graph.node[self.end_node]['state'].copy()
         # Fix any errors
-        self.__relabel_nodes()
+        self.relabel_nodes()

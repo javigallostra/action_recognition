@@ -9,9 +9,39 @@ class A2SN_BUILD(A2SN_BASE):
     """
     Call A2SN_BASE init function
     """
-    def __init__(self):
+    def __init__(self, action_name = ""):
         # Initialize
-        super(A2SN_BUILD, self).__init__()
+        super(A2SN_BUILD, self).__init__(action_name)
+
+
+    """
+    Merge the current graph with a different one
+    (currently only works if adding a single-path graph)
+    """
+    def __iadd__(self, A2SN2):
+        new_states = [A2SN2.graph.node[n]['state'] for n in range(1,A2SN2.end_node)]
+        parent_state = State([])
+        # merge all nodes (except for first and last node)
+        for new_state in new_states:
+            self.add_node_by_state(new_state, parent_state)
+            parent_state = new_state.copy()
+        # merge last node
+        new_state = A2SN2.graph.node[A2SN2.end_node]['state']
+        if self.end_node == 0:
+            # case of empty left-hand graph
+            self.add_node_by_state(new_state, parent_state)
+            self.end()
+        else:
+            # normal case: check edge and add if necessary
+            event = new_state - parent_state
+            current_states_hash = [self.graph.node[n]['state'].hash() for n in range(self.node_count)]
+            parent_node = current_states_hash.index(parent_state.hash())
+            edge = (parent_node, self.end_node)
+            if edge not in self.graph.edges():
+                self.graph.add_edge(edge[0], edge[1], weight=1, factor=1, trigger=event)
+        # relabel the nodes to match the new structure
+        self.relabel_nodes()
+        return self
 
     """
     Used for building the graph
@@ -48,7 +78,7 @@ class A2SN_BUILD(A2SN_BASE):
         current_states_hash = [self.graph.node[n]['state'].hash() for n in range(self.node_count)]
         # add node if needed, else do nothing
         if new_state.hash() not in current_states_hash:
-            self.graph.add_node(self.node_count, state=new_state.copy(), end=False, color=(0,0,0), value=0.0)
+            self.graph.add_node(self.node_count, state=new_state.copy(), end=False, color=(0,0,0), value=0.0, depth=0)
             current_states_hash.append(new_state.hash())
             self.node_count += 1
         # add edge if needed, else do nothing
@@ -59,3 +89,12 @@ class A2SN_BUILD(A2SN_BASE):
                 self.graph.add_edge(edge[0], edge[1], weight=1, factor=1, trigger=event)
         # update latest_state
         self.latest_state = new_state.copy()
+
+    """
+    End building the graph, setting the
+    latest node to be the end node
+    """
+    def end(self):
+        self.end_node = self.node_count - 1
+        self.graph.node[self.end_node]['end'] = True
+        self.relabel_nodes()

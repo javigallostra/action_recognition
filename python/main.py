@@ -60,7 +60,7 @@ plt.ion()
 n = 1
 A2SN_pool = {}
 for action in MasterSequences.keys():
-    A2SN_pool[action] = A2SN_BUILD()
+    A2SN_pool[action] = A2SN_BUILD(action)
     for master_sequence in MasterSequences[action]:
         for i in range(n):
             sequence = master_sequence.generate()
@@ -82,35 +82,68 @@ for action in A2SN_pool.keys():
 plt.ion()
 plt.show()
 
-plt.ion()
+# plt.ion()
+plt.ioff()
 ##################
 # Test the program
 
-# 1 - generate sequence
-action = rn.choice(list(MasterSequences.keys()))
-sequence_generator = rn.choice(MasterSequences[action])
-seq = sequence_generator.generate()
-# 2 - start A2SNs
-for A2SN in A2SN_pool.values():
-    A2SN.start()
-# 3 - run sequence
-print(action)
-ti = time.time()
-for new_event, all_events, dt, te in seq:
-    print("******************************** " + str(new_event))
+for i in range(10):
+    # 1 - generate sequence
+    action = rn.choice(list(MasterSequences.keys()))
+    sequence_generator = rn.choice(MasterSequences[action])
+    seq = sequence_generator.generate()
+    # 2 - start A2SNs
     for A2SN in A2SN_pool.values():
-        A2SN.update_events(all_events)
-    #plt.show()
-    plt.pause(0.0001)
-    timeel = time.time() - ti
-    if (timeel - dt) >= -0.0001:
-        time.sleep(0.0001)
-    else:
-        time.sleep(dt - timeel)
+        if i == 0:
+            A2SN.start()
+        else:
+            A2SN.restart()
+    # 3 - run sequence
+    print(action)
     ti = time.time()
+    found = False
+    timefound = 0
+    tottime = 0
+    for new_event, all_events, dt, te in seq:
+        print("******************************** " + str(new_event))
+        for A2SN in A2SN_pool.values():
+            A2SN.update_events(all_events)
+        plt.show()
+        plt.pause(0.0001)
+        timeel = time.time() - ti
+        if (timeel - dt) >= -0.0001:
+            time.sleep(0.0001)
+        else:
+            time.sleep(dt - timeel)
 
-plt.ioff()
-plt.show()
+        maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value) for A2SN in A2SN_pool.values()]
+        relvals =[(maxvals[i][0], [(maxvals[i][1] - maxvals[j][1]) >  maxvals[j][1] for j in range(len(maxvals)) if j != i]) for i in range(len(maxvals))]
+        th = 10
+        tottime += dt
+        if not found:
+            for i in range(len(maxvals)):
+                if maxvals[i][1] > th:
+                    superior = True
+                    for j in relvals[i][0]:
+                        if not j:
+                            superior = False
+                    if superior:
+                        found = True
+                        timefound = te
+                        val = maxvals[i][1]
+                        mval = max([maxvals[k][1] for k in range(len(maxvals)) if k != i])
+                        print("DETECTED :" + maxvals[i][0] + " at t = " + str(timefound) + " conf: " + str(val/mval))
+                        print(val)
+                        print(mval)
+                        print(maxvals)
+                        break
+
+        ti = time.time()
+
+    print("EDT: " + str(timefound/tottime))
+
+#plt.ioff()
+#plt.show()
 
 for A2SN in A2SN_pool.values():
     A2SN.stop()

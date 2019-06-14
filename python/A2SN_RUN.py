@@ -53,13 +53,32 @@ class A2SN_RUN(A2SN_BASE):
     def start(self):
         self.update_thread = threading.Thread(target=self.__update_loop,daemon=True)
         self.ti = time.time()
+        print(max([self.graph.node[node]['value']/self.graph.node[node]['depth'] for node in range(self.node_count)]))
         self.update_thread.start()
 
     """
-    Stop the updating thread
+    Stop the running thread, set values to zero and start again
+    """
+    def restart(self):
+        self.stop()
+        self.update_thread.join()
+        for node in range(self.node_count):
+            self.graph.node[node]['value'] = 0.0
+        self.graph.node[0]['value'] = 1.0
+        self.max_value = 0
+        self.ti = 0
+        self.active_events = []
+        self.update_thread = 0
+        self.stop_thread = False
+        self.start()
+
+    """
+    Stop the updating threads
     """
     def stop(self):
+        self.thread_lock.acquire()
         self.stop_thread = True
+        self.thread_lock.release()
 
     """
     Thread function that updates the node values
@@ -72,7 +91,7 @@ class A2SN_RUN(A2SN_BASE):
             ti = time.time()
             self.thread_lock.acquire()
             self.__update()
-            print(self.max_value)
+            #print(self.graph.node[0]['action'] + ": " + str(self.max_value))
             self.thread_lock.release()
             dt = time.time() - ti
             # check that dt < clock tick and wait/continue
@@ -104,7 +123,7 @@ class A2SN_RUN(A2SN_BASE):
                     #################
                 self.graph.node[node]['value'] *= A2SN_RUN.decay_factor
                 ######################
-                self.max_value = max(self.max_value, self.graph.node[node]['value']/self.depth_map[node])
+                self.max_value = max(self.max_value, self.graph.node[node]['value']/self.graph.node[node]['depth'])
                 ######################
         # plot at each tick
         #self.plot()
