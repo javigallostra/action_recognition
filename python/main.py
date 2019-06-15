@@ -8,6 +8,11 @@ import matplotlib.pyplot as plt
 import threading
 import time
 
+# disable warnings
+import sys
+if not sys.warnoptions:
+    import warnings
+    warnings.simplefilter("ignore")
 
 class PlotPoolA2SN:
     def __init__(self, pool, tick):
