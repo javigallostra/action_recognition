@@ -189,7 +189,7 @@ class A2SN_BASE(object):
     def __set_edge_factors(self):
         for n in range(self.end_node,0,-1):
             pred = self.graph.predecessors(n)
-            n_pred = len(pred)
+            n_pred = len(list(pred))
             for p in pred:
                 self.graph.edge[p][n]['factor'] = 1/n_pred
 

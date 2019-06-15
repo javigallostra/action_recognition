@@ -80,13 +80,6 @@ class RunPoolA2SN:
             # time it
             self.ti = time.time()
 
-    def __check_stop(self):
-        # thread safe loop ending check
-        self.thread_lock.acquire()
-        check = self.stop_update
-        self.thread_lock.release()
-        return check
-
     def __check_detection(self):
         if not self.detected:
             maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value) for A2SN in self.pool.values()]
@@ -111,6 +104,13 @@ class RunPoolA2SN:
         self.thread_lock.release()
         self.update_thread.join()
 
+    def __check_stop(self):
+        # thread safe loop ending check
+        self.thread_lock.acquire()
+        check = self.stop_update
+        self.thread_lock.release()
+        return check
+
     def start_update_loop(self):
         self.detected = False
         for A2SN in self.pool.values():
@@ -122,6 +122,56 @@ class RunPoolA2SN:
     def restart_update_loop(self):
         self.stop_update_loop()
         self.start_update_loop()
+
+
+
+class SequenceSimulator:
+    def __init__(self, master_sequences, pool):
+        self.master_sequences = master_sequences
+        self.pool = pool
+        self.sequence = 0
+        self.run_thread = 0
+        self.t0 = 0
+        self.stop_run = False
+        self.thread_lock = threading.Lock()
+
+    def run_random_sequence(self):
+        action = rn.choice(list(MasterSequences.keys()))
+        generator = rn.choice(MasterSequences[action])
+        self.sequence = generator.generate()
+        self.stop_run = False
+        self.run_thread = threading.Thread(target=self.__run_sequence,daemon=True)
+        self.t0 = time.time()
+        print("Start simulation of action: " + str(action).upper())
+        self.run_thread.start()
+
+    def __run_sequence(self):
+        ti = time.time()
+        for new_event, all_events, dt, te in self.sequence:
+            print("NEW EVENT " + str(new_event))
+            for A2SN in self.pool.values():
+                A2SN.update_events(all_events)
+            tel = time.time() - ti
+            if (dt - tel) > 0:
+                time.sleep(dt - tel)
+            ti = time.time()
+            if self.__check_stop():
+                return
+        print("Sequence finished.")
+
+    def stop_run(self):
+        self.thread_lock.acquire()
+        self.stop_run = True
+        self.thread_lock.release()
+        self.run_thread.join()
+
+    def __check_stop(self):
+        # thread safe loop ending check
+        self.thread_lock.acquire()
+        check = self.stop_run
+        self.thread_lock.release()
+        return check
+
 
 
 o = KitchenObjects()
@@ -199,28 +249,8 @@ for action in MasterSequences.keys():
 # Test the program
 plotter = PlotPoolA2SN(A2SN_pool,0.5)
 updater = RunPoolA2SN(A2SN_pool, 0.2)
-#sequenceSim = SequenceSimulator(A2SN_pool, MasterSequences)
+sequenceSim = SequenceSimulator(MasterSequences, A2SN_pool)
 
 updater.start_update_loop()
-for A2SN in A2SN_pool.values():
-    A2SN.update_events([11])
+sequenceSim.run_random_sequence()
 plotter.plot_loop()
-
-"""
-for i in range(1):
-    # 1 - generate sequence
-    action = rn.choice(list(MasterSequences.keys()))
-    sequence_generator = rn.choice(MasterSequences[action])
-    seq = sequence_generator.generate()
-    # 2 - run sequence
-    print(action)
-    ti = time.time()
-    for new_event, all_events, dt, te in seq:
-        print("******************************** " + str(new_event))
-        for A2SN in A2SN_pool.values():
-            A2SN.update_events(all_events)
-        timeel = time.time() - ti
-        if (dt - timeel) > 0:
-            time.sleep(dt - timeel)
-        ti = time.time()
-"""
