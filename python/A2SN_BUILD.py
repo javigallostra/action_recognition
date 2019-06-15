@@ -98,3 +98,9 @@ class A2SN_BUILD(A2SN_BASE):
         self.end_node = self.node_count - 1
         self.graph.node[self.end_node]['end'] = True
         self.relabel_nodes()
+
+    """
+    Override plot method
+    """
+    def plot(self, fig = 0, title = ""):
+        self._plot(fig, title)

@@ -53,7 +53,6 @@ class A2SN_RUN(A2SN_BASE):
     def start(self):
         self.update_thread = threading.Thread(target=self.__update_loop,daemon=True)
         self.ti = time.time()
-        print(max([self.graph.node[node]['value']/self.graph.node[node]['depth'] for node in range(self.node_count)]))
         self.update_thread.start()
 
     """
@@ -62,15 +61,23 @@ class A2SN_RUN(A2SN_BASE):
     def restart(self):
         self.stop()
         self.update_thread.join()
-        for node in range(self.node_count):
-            self.graph.node[node]['value'] = 0.0
-        self.graph.node[0]['value'] = 1.0
         self.max_value = 0
         self.ti = 0
         self.active_events = []
         self.update_thread = 0
         self.stop_thread = False
+        self.graph.node[0]['value'] = 1.0
+        for node in range(1, self.node_count):
+            self.graph.node[node]['value'] = 0.0
         self.start()
+
+    """
+    Override plot method to make it thread safe
+    """
+    def plot(self, fig = 0, title = ""):
+        self.thread_lock.acquire()
+        self._plot(fig, title)
+        self.thread_lock.release()
 
     """
     Stop the updating threads
@@ -86,26 +93,32 @@ class A2SN_RUN(A2SN_BASE):
     """
     def __update_loop(self):
         # While not stop
-        while(not self.stop_thread):
-            # update graph values and time it
-            ti = time.time()
+        stop = False
+        ti = time.time()
+        while not stop:
+            # update graph values
             self.thread_lock.acquire()
             self.__update()
-            #print(self.graph.node[0]['action'] + ": " + str(self.max_value))
             self.thread_lock.release()
-            dt = time.time() - ti
+            te = time.time() - ti
             # check that dt < clock tick and wait/continue
-            if (dt > A2SN_RUN.tick):
-                continue
-            else:
-                time.sleep(A2SN_RUN.tick - dt)
-                continue
+            if (A2SN_RUN.tick - te) > 0:
+                time.sleep(A2SN_RUN.tick - te)
+            # thread safe loop ending
+            self.thread_lock.acquire()
+            if self.stop_thread:
+                stop = True
+            self.thread_lock.release()
+            # time it
+            ti = time.time()
     """
     Update the node values
     """
     def __update(self):
         self.max_value = 0
         messages = {}
+        if (len(self.active_events) < 1) and (self.graph.node[0]['value'] == 1):
+            return
         # for each active event
         for event in self.active_events:
             # check triggered edges -> add node input messages
@@ -118,12 +131,5 @@ class A2SN_RUN(A2SN_BASE):
             for node in range(self.node_count):
                 if node in messages.keys():
                     self.graph.node[node]['value'] += sum(messages[node])
-                    #################
-                    # SUM OR MAX???
-                    #################
                 self.graph.node[node]['value'] *= A2SN_RUN.decay_factor
-                ######################
                 self.max_value = max(self.max_value, self.graph.node[node]['value']/self.graph.node[node]['depth'])
-                ######################
-        # plot at each tick
-        #self.plot()

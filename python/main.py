@@ -6,17 +6,68 @@ import matplotlib.pyplot as plt
 import random as rn
 import time
 
+import threading
+import time
+
+
+class PlotPoolA2SN:
+    def __init__(self, pool, dt):
+        self.pool = pool
+        self.dt = dt
+        self.nfigs = 0
+        self.stop_thread = False
+        self.thread_lock = threading.Lock()
+        self.plot_thread = threading.Thread(target=self.__plot_loop,daemon=True)
+        self.plot_thread.start()
+
+    def __plot_init(self):
+        self.nfigs = 0
+        for A2SN in self.pool.values():
+            self.nfigs += 1
+            A2SN.plot(self.nfigs)
+
+    def __plot_loop(self):
+        plt.ion()
+        self.__plot_init()
+        stop = False
+        t0 = time.time()
+        while not stop:
+            for A2SN in self.pool.values():
+                A2SN.plot()
+            plt.show()
+            plt.pause(0.0001)
+            dt = time.time() - t0
+            if (self.dt - dt) > 0:
+                time.sleep(self.dt - dt)
+            self.thread_lock.acquire()
+            if self.stop_thread:
+                stop = True
+            self.thread_lock.release()
+            t0 = time.time()
+        plt.ioff()
+        plt.show()
+        plt.close('all')
+
+    """
+    Stop the plot thread and remove all figures
+    """
+    def stop(self):
+        self.thread_lock.acquire()
+        self.stop_thread = True
+        self.thread_lock.release()
+        self.plot_thread.join()
+
 o = KitchenObjects()
 
 #######################################
 # Generate master sequences for actions
 gen = SequenceGenerator()
 MasterSequences = {}
-milk_options = ["pascual","lletnostra"]
+milk_options = ["pascual"]#,"lletnostra"]
 coffee_options = ["nescafe"]
 cacao_options = ["nesquik"]
 sugar_options = ["sugar"]
-cereal_options = ["acorsugar", "marcillacafe"]
+cereal_options = ["acorsugar"]#, "marcillacafe"]
 yogurt_options = ["yogurt"]
 chocolate_options = ["colacao"]
 mug_options = ["mug"]
@@ -55,10 +106,9 @@ for milk in milk_options:
 #######################################
 # Generate A2SN_BASE for each action
 # (repeat each master sequence n times)
-# then convert to A2SN_RUN
-plt.ion()
-n = 1
+# then save the generated A2SN
 A2SN_pool = {}
+n = 1
 for action in MasterSequences.keys():
     A2SN_pool[action] = A2SN_BUILD(action)
     for master_sequence in MasterSequences[action]:
@@ -69,24 +119,18 @@ for action in MasterSequences.keys():
                 A2SN.add_node_by_event(new_event)
             A2SN.end()
             A2SN_pool[action] += A2SN
-    run_a2sn = A2SN_RUN()
-    run_a2sn.inherit(A2SN_pool[action])
-    A2SN_pool[action] = run_a2sn
+    A2SN_pool[action].export(action + ".yaml")
 
-# Plot for visualization and for linking to figure
-fig = 1
-for action in A2SN_pool.keys():
-    A2SN_pool[action].plot(fig, action)
-    fig += 1
+#####################################################
+# Load the prevously saved A2SN into A2SN_RUN objects
+A2SN_pool = {}
+for action in MasterSequences.keys():
+    A2SN_pool[action]  = A2SN_RUN()
+    A2SN_pool[action].load(action + ".yaml")
 
-plt.ion()
-plt.show()
-
-# plt.ion()
-plt.ioff()
 ##################
 # Test the program
-
+plotter = PlotPoolA2SN(A2SN_pool,0.1)
 for i in range(10):
     # 1 - generate sequence
     action = rn.choice(list(MasterSequences.keys()))
@@ -108,13 +152,6 @@ for i in range(10):
         print("******************************** " + str(new_event))
         for A2SN in A2SN_pool.values():
             A2SN.update_events(all_events)
-        plt.show()
-        plt.pause(0.0001)
-        timeel = time.time() - ti
-        if (timeel - dt) >= -0.0001:
-            time.sleep(0.0001)
-        else:
-            time.sleep(dt - timeel)
 
         maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value) for A2SN in A2SN_pool.values()]
         relvals =[(maxvals[i][0], [(maxvals[i][1] - maxvals[j][1]) >  maxvals[j][1] for j in range(len(maxvals)) if j != i]) for i in range(len(maxvals))]
@@ -138,6 +175,10 @@ for i in range(10):
                         print(maxvals)
                         break
 
+        timeel = time.time() - ti
+        if (dt - timeel) > 0:
+            time.sleep(dt - timeel)
+
         ti = time.time()
 
     print("EDT: " + str(timefound/tottime))
@@ -148,69 +189,5 @@ for i in range(10):
 for A2SN in A2SN_pool.values():
     A2SN.stop()
 
-"""
-
-for action in A2SN_pool.keys()
-    A2SN_pool[action].start()
-
-A2SN_pool["coffee"].update_events([1,2,3])
-
-time.sleep(1)
-
-A2SN_pool["coffee"].stop()
-
-
-while len(list(nx.all_simple_paths(G.graph,0,G.end_node))) < MakeCoffee.variations():
-"""
-
-
-"""
-G = A2SN_BUILD()
-i = 0
-while i<5:
-    seq1 = MakeCoffee1.generate()
-    seq2 = MakeCoffee2.generate()
-    G2 = A2SN_BUILD()
-    G3 = A2SN_BUILD()
-    for event, dt, te in seq1:
-        G2.add_node_by_event(event)
-    for event, dt, te in seq2:
-        G3.add_node_by_event(event)
-    G2.end()
-    G3.end()
-    G += G2
-    G += G3
-    i+=1
-
-G2.plot()
-plt.ioff()
-plt.show()
-G2 += G2
-G2.plot()
-plt.ioff()
-plt.show()
-
-
-
-G.plot()
-plt.ioff()
-plt.show()
-
-G.export()
-
-G2 = A2SN_RUN()
-
-plt.ion()
-plt.figure(1)
-G2.plot(1)
-
-seq = MakeCoffee1.generate()
-for event, dt, past_events in seq:
-    print(event)
-    G2.update(past_events, dt)
-    plt.pause(0.1)
-
-
-plt.ioff()
-plt.show()
-"""
+while True:
+    pass

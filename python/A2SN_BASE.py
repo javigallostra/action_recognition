@@ -27,7 +27,7 @@ class A2SN_BASE(object):
         self.latest_state = State([])
         # figure to plot to and title
         self.figure = 1
-        self.fig_title = ""
+        self.fig_title = action_name
 
     ################
     # PLOT METHODS #
@@ -124,7 +124,7 @@ class A2SN_BASE(object):
     """
     Plot the graph using matplotlib
     """
-    def plot(self, fig = 0, title = ""):
+    def _plot(self, fig = 0, title = ""):
         # change figure and title if needed
         if fig:
             self.figure = fig
@@ -216,6 +216,8 @@ class A2SN_BASE(object):
         self.end_node = self.node_count - 1
         # update latest_state
         self.latest_state = self.graph.node[self.end_node]['state'].copy()
+        # set figure title to be the action name
+        self.fig_title = self.graph.node[0]['action']
         # Fix any errors
         self.relabel_nodes()
 
@@ -231,5 +233,7 @@ class A2SN_BASE(object):
         self.end_node = self.node_count - 1
         # update latest_state
         self.latest_state = self.graph.node[self.end_node]['state'].copy()
+        # set figure title to be the action name
+        self.fig_title = self.graph.node[0]['action']
         # Fix any errors
         self.relabel_nodes()
