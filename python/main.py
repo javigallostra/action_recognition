@@ -49,7 +49,7 @@ class PlotPoolA2SN:
             if (self.tick - dt) > 0:
                 time.sleep(self.tick - dt)
             else:
-                print("WARNING - plot loop slower than desired rate: " + str(dt))
+                pass#print("WARNING - plot loop slower than desired rate: " + str(dt))
             t0 = time.time()
         self.__plot_end()
 
@@ -70,24 +70,28 @@ class RunPoolA2SN:
         self.ti = 0
 
     def __update_loop(self):
+        t0 = time.time()
         while not self.__check_stop():
             # update graph values
             for A2SN in self.pool.values():
                 A2SN.update()
             # check action recognition
             self.__check_detection()
-            dt = time.time() - self.ti
+            dt = time.time() - t0
             # check that dt < clock tick and wait/continue
             if (self.tick - dt) > 0:
                 time.sleep(self.tick - dt)
             else:
-                print("WARNING - update loop slower than desired rate: " + str(dt))
+                pass
+                #print("WARNING - update loop slower than desired rate: " + str(dt))
             # time it
-            self.ti = time.time()
+            t0 = time.time()
 
     def __check_detection(self):
+        te = time.time()-self.ti
+        maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value/te) for A2SN in self.pool.values()]
+        print(str(te)+','+','.join([','.join([info[0],str(info[1])]) for info in maxvals]))
         if not self.detected:
-            maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value) for A2SN in self.pool.values()]
             relvals =[(maxvals[i][0], [(maxvals[i][1] - maxvals[j][1]) >  maxvals[j][1] for j in range(len(maxvals)) if j != i]) for i in range(len(maxvals))]
             th = 10
             for i in range(len(maxvals)):
