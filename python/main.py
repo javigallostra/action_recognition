@@ -258,8 +258,8 @@ for action in MasterSequences.keys():
 # Test the program
 plotter = PlotPoolA2SN(A2SN_pool,0.5)
 updater = RunPoolA2SN(A2SN_pool, 0.2)
-sequenceSim = SequenceSimulator(MasterSequences, A2SN_pool)
+#sequenceSim = SequenceSimulator(MasterSequences, A2SN_pool)
 
 updater.start_update_loop()
-sequenceSim.run_random_sequence()
-plotter.plot_loop()
+#sequenceSim.run_random_sequence()
+#plotter.plot_loop()
