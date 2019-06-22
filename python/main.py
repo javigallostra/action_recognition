@@ -7,6 +7,9 @@ import time
 import matplotlib.pyplot as plt
 import threading
 import time
+import math
+
+from numpy import arange
 
 # disable warnings
 import sys
@@ -44,6 +47,7 @@ class PlotPoolA2SN:
         self.__plot_init()
         t0 = time.time()
         while not self.stop_loop:
+            plt.ioff()
             self.__plot_update()
             dt = time.time() - t0
             if (self.tick - dt) > 0:
@@ -70,6 +74,7 @@ class RunPoolA2SN:
         self.ti = 0
 
     def __update_loop(self):
+        self.ti = time.time()
         t0 = time.time()
         while not self.__check_stop():
             # update graph values
@@ -89,8 +94,8 @@ class RunPoolA2SN:
 
     def __check_detection(self):
         te = time.time()-self.ti
-        maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value/te) for A2SN in self.pool.values()]
-        print(str(te)+','+','.join([','.join([info[0],str(info[1])]) for info in maxvals]))
+        maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value) for A2SN in self.pool.values()]
+        #print(str(te)+','+','.join([','.join([info[0],str(info[1])]) for info in maxvals]))
         if not self.detected:
             relvals =[(maxvals[i][0], [(maxvals[i][1] - maxvals[j][1]) >  maxvals[j][1] for j in range(len(maxvals)) if j != i]) for i in range(len(maxvals))]
             th = 10
@@ -104,7 +109,7 @@ class RunPoolA2SN:
                         val = maxvals[i][1]
                         mval = max([maxvals[k][1] for k in range(len(maxvals)) if k != i])
                         self.detected = True
-                        print("DETECTED :" + maxvals[i][0] + " at t = " + str(0) + " conf: " + str(val/mval))
+                        print("DETECTED :" + maxvals[i][0] + " at t = " + str(te) + " conf: " + str(val/mval))
                         break
 
     def stop_update_loop(self):
@@ -203,8 +208,8 @@ for coffee in coffee_options:
     for milk in milk_options:
         for sugar in sugar_options:
             for mug in mug_options:
-                gen.add_step([(o[coffee].PRESENT,1.5,2), (o[milk].PRESENT,1.5,2), (o[mug].PRESENT,1.5,2), (o[sugar].PRESENT,1.5,2)])
-                gen.add_step([(o[coffee].MOVING,1.5,2), (o[milk].MOVING,1.5,2), (o[sugar].MOVING,1.5,2)])
+                gen.add_step([(o[coffee].PRESENT,0,0), (o[milk].PRESENT,5,7), (o[mug].PRESENT,5,7), (o[sugar].PRESENT,5,7)])
+                gen.add_step([(o[coffee].MOVING,10,15), (o[milk].MOVING,10,15), (o[sugar].MOVING,10,15)])
                 MasterSequences["coffee"].append(gen.copy())
                 gen.empty()
 # 2 - cacao
@@ -212,8 +217,8 @@ MasterSequences["cacao"] = []
 for milk in milk_options:
     for cacao in cacao_options:
         for mug in mug_options:
-            gen.add_step([(o[cacao].PRESENT,1.5,2), (o[milk].PRESENT,1.5,2), (o[mug].PRESENT,1.5,2)])
-            gen.add_step([(o[cacao].MOVING,1.5,2), (o[milk].MOVING,1.5,2)])
+            gen.add_step([(o[cacao].PRESENT,0,0), (o[milk].PRESENT,5,7), (o[mug].PRESENT,7,7)])
+            gen.add_step([(o[cacao].MOVING,10,15), (o[milk].MOVING,10,15)])
             MasterSequences["cacao"].append(gen.copy())
             gen.empty()
 
@@ -223,8 +228,8 @@ for milk in milk_options:
     for cacao in cacao_options:
         for cereals in cereal_options:
             for mug in mug_options:
-                gen.add_step([(o[cereals].PRESENT,1.5,2), (o[milk].PRESENT,1.5,2), (o[mug].PRESENT,1.5,2)])
-                gen.add_step([(o[cereals].MOVING,1.5,2), (o[milk].MOVING,1.5,2)])
+                gen.add_step([(o[cereals].PRESENT,0,0), (o[milk].PRESENT,5,7), (o[mug].PRESENT,5,7)])
+                gen.add_step([(o[cereals].MOVING,10,15), (o[milk].MOVING,10,15)])
                 MasterSequences["cereals"].append(gen.copy())
                 gen.empty()
 
@@ -234,7 +239,7 @@ for milk in milk_options:
 # (repeat each master sequence n times)
 # then save the generated A2SN
 A2SN_pool = {}
-n = 1
+n = 5
 for action in MasterSequences.keys():
     A2SN_pool[action] = A2SN_BUILD(action)
     for master_sequence in MasterSequences[action]:
@@ -254,12 +259,217 @@ for action in MasterSequences.keys():
     A2SN_pool[action]  = A2SN_RUN()
     A2SN_pool[action].load(action + ".yaml")
 
-##################
-# Test the program
-plotter = PlotPoolA2SN(A2SN_pool,0.5)
-updater = RunPoolA2SN(A2SN_pool, 0.2)
-#sequenceSim = SequenceSimulator(MasterSequences, A2SN_pool)
+########################
+# Test the program in RT
+"""
+plotter = PlotPoolA2SN(A2SN_pool,1.0)
+updater = RunPoolA2SN(A2SN_pool, 0.5)
+sequenceSim = SequenceSimulator(MasterSequences, A2SN_pool)
 
 updater.start_update_loop()
-#sequenceSim.run_random_sequence()
-#plotter.plot_loop()
+sequenceSim.run_random_sequence()
+plotter.plot_loop()
+"""
+
+#######################
+# Test the program fast
+
+def check_detection(a2sn_pool, alpha, beta):
+    maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value) for A2SN in a2sn_pool.values()]
+    relvals =[(maxvals[i][0], [(maxvals[i][1] - maxvals[j][1])/maxvals[j][1] > alfa if ((j != i) and (maxvals[j][1] > 0)) else False for j in range(len(maxvals))]) if (maxvals[i][1] > 0) else (0,False) for i in range(len(maxvals))]
+    for i in range(len(maxvals)):
+        if maxvals[i][1] > beta:
+            superior = True
+            for j in relvals[i][0]:
+                if not j:
+                    superior = False
+            if superior:
+                val = maxvals[i][1]
+                mval = max([maxvals[k][1] for k in range(len(maxvals)) if k != i])
+                return ([maxvals[i][0], val/mval])
+    return 0
+"""
+unrecog_perc = 5
+alfa = 10
+beta = 10
+i = 0
+while i < 1:
+    i += 1
+    # generate confmat
+    cmat = {}
+    occurr = {}
+    for action in list(A2SN_pool.keys()):
+        cmat[action] = {}
+        occurr[action] = 0
+        for action2 in list(A2SN_pool.keys()):
+            cmat[action][action2] = 0
+    tests = 1000
+    update_tick = 0.35
+    tot_corr = 0
+    corr_edt = 0
+    corr_conf = 0
+    undet = 0
+    for i in range(tests):
+        action = rn.choice(list(MasterSequences.keys()))
+        #print("ACTION: " + action)
+        m_seq = rn.choice(MasterSequences[action])
+        seq = m_seq.generate()
+        dt = 0
+        step = 0
+        tot_t = seq[-1][-1]
+        det = 0
+        for A2SN in A2SN_pool.values():
+            A2SN.reset()
+        while dt < tot_t:
+            dt += update_tick
+            if dt >= seq[step][-1]:
+                for A2SN in A2SN_pool.values():
+                    A2SN.update_events(seq[step][1])
+                step += 1
+            for A2SN in A2SN_pool.values():
+                A2SN.update()
+            det = check_detection(A2SN_pool, alfa, beta)
+            if det != 0:
+                print("DETECTED :" + det[0] + " at t = " + str(dt) + " conf: " + str(det[1]) + " edt: " + str(100*dt/tot_t))
+                cmat[action][det[0]] += 1
+                occurr[action] += 1
+                if (action == det[0]):
+                    tot_corr += 1
+                    corr_edt += dt/tot_t
+                    corr_conf += det[1]
+                break
+        if det == 0:
+            undet += 1
+
+    for action in list(A2SN_pool.keys()):
+        for action2 in list(cmat[action].keys()):
+            cmat[action][action2] /= occurr[action]
+
+    print("CMAT")
+    print(cmat)
+
+    print("AVG UNDET")
+    print(100*undet/tests)
+
+    print("AVG CORR")
+    print(100*tot_corr/tests)
+
+    print("AVG FALSE")
+    print(100*(tests - tot_corr - undet)/tests)
+
+    print("AVG EDT")
+    print(100*corr_edt/tot_corr)
+
+    print("AVG CONF")
+    print(corr_conf/tot_corr)
+
+    print("ALPHA")
+    print(alfa)
+
+    print("BETA")
+    print(beta)
+
+    #if (100*undet/tests) > unrecog_perc:
+    #    beta *= 0.95
+    #    alfa *= 0.95
+    #else:
+    #    alfa *= math.exp(corr_conf/tot_corr)
+"""
+
+
+############
+# ROC
+#for alfa in [x/10 for x in range(10,201)]:
+#    for beta in [x/10 for x in range(10,201)]:
+"""
+for alfa in [x for x in arange(0,100,1)]:
+    for beta in [x for x in arange(0,100,1)]:
+        # generate confmat
+        cmat = {}
+        occurr = {}
+        for action in list(A2SN_pool.keys()):
+            cmat[action] = {}
+            occurr[action] = 0
+            for action2 in list(A2SN_pool.keys()):
+                cmat[action][action2] = 0
+        tests = 100
+        update_tick = 0.35
+        tot_corr = 0
+        corr_edt = 0
+        corr_conf = 0
+        undet = 0
+        for i in range(tests):
+            action = rn.choice(list(MasterSequences.keys()))
+            #print("ACTION: " + action)
+            m_seq = rn.choice(MasterSequences[action])
+            seq = m_seq.generate()
+            dt = 0
+            step = 0
+            tot_t = seq[-1][-1]
+            det = 0
+            for A2SN in A2SN_pool.values():
+                A2SN.reset()
+            while dt < tot_t:
+                dt += update_tick
+                if dt >= seq[step][-1]:
+                    for A2SN in A2SN_pool.values():
+                        A2SN.update_events(seq[step][1])
+                    step += 1
+                for A2SN in A2SN_pool.values():
+                    A2SN.update()
+                det = check_detection(A2SN_pool, alfa, beta)
+                if det != 0:
+                    #print("DETECTED :" + det[0] + " at t = " + str(dt) + " conf: " + str(det[1]) + " edt: " + str(100*dt/tot_t))
+                    cmat[action][det[0]] += 1
+                    occurr[action] += 1
+                    if (action == det[0]):
+                        tot_corr += 1
+                        corr_edt += dt/tot_t
+                        corr_conf += det[1]
+                    break
+            if det == 0:
+                undet += 1
+
+        #for action in list(A2SN_pool.keys()):
+        #    for action2 in list(cmat[action].keys()):
+        #        cmat[action][action2] /= occurr[action]
+        doable = True
+        stat_data = []
+        for action in list(cmat.keys()):
+            TP = 0
+            FN = 0
+            FP = 0
+            TN = 0
+            for act1 in list(cmat.keys()):
+                for act2 in list(cmat[act1].keys()):
+                    if (act1 == action):
+                        if (act1 == act2):
+                            TP += cmat[act1][act2]
+                        else:
+                            FN += cmat[act1][act2]
+                    elif (act2 == action):
+                        FP += cmat[act1][act2]
+                    else:
+                        TN += cmat[act1][act2]
+            #if undet < 10: print (action, TP, FP, P,N, undet, P+N+undet)
+            if (TP+FN == 0 or FP+TN == 0):
+                doable = False
+            else:
+                stat_data.append([TP,FN,FP,TN])
+        if doable:
+            elements = []
+            for data in stat_data:
+                elements.append(data[2]/(data[2]+data[3]))
+                elements.append(data[0]/(data[0]+data[1]))
+            print(' '.join([str(i) for i in elements]))
+            totP = sum([data[0]+data[1] for data in stat_data])
+            totN = sum([data[2]+data[3] for data in stat_data])
+            if (totP!=0 and totN!=0):
+                microTPR = sum([data[0] for data in stat_data])/totP
+                macroTPR = sum([data[0]/(data[0]+data[1]) for data in stat_data])/len(stat_data)
+                microFPR = sum([data[2] for data in stat_data])/totN
+                macroFPR = sum([data[2]/(data[2]+data[3]) for data in stat_data])/len(stat_data)
+                #print(microFPR,microTPR,macroFPR,macroTPR)
+
+print (cmat)
+"""

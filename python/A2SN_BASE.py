@@ -80,7 +80,7 @@ class A2SN_BASE(object):
     def __node_label_map(self):
         labels = {}
         for n in self.graph.nodes():
-            labels[n] = "{:.2f}".format(self.graph.node[n]['value'])
+            labels[n] = "{:.2f}".format(self.graph.node[n]['value']/self.graph.node[n]['depth'])
         return labels
 
     """

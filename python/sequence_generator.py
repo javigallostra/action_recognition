@@ -1,4 +1,5 @@
 import random as rn
+from math import factorial
 
 """
 Class used to build master sequences and then
@@ -26,7 +27,7 @@ class SequenceGenerator:
         variations = 1
         for step in self.step_list:
             if type(step).__name__ == 'list':
-                variations *= len(step)
+                variations *= factorial(len(step))
         return variations
 
     """
