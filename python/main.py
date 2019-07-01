@@ -47,13 +47,13 @@ class PlotPoolA2SN:
         self.__plot_init()
         t0 = time.time()
         while not self.stop_loop:
-            plt.ioff()
             self.__plot_update()
             dt = time.time() - t0
             if (self.tick - dt) > 0:
                 time.sleep(self.tick - dt)
             else:
-                pass#print("WARNING - plot loop slower than desired rate: " + str(dt))
+                if self.verbose: print("WARNING - plot loop slower than desired rate: " + str(dt))
+                pass
             t0 = time.time()
         self.__plot_end()
 
@@ -64,9 +64,10 @@ class PlotPoolA2SN:
         self.stop_loop = True
 
 class RunPoolA2SN:
-    def __init__(self, pool, tick):
+    def __init__(self, pool, tick, verbose = False):
         self.pool = pool
         self.tick = tick
+        self.verbose = verbose
         self.detected = False
         self.stop_update = False
         self.update_thread = 0
@@ -87,29 +88,30 @@ class RunPoolA2SN:
             if (self.tick - dt) > 0:
                 time.sleep(self.tick - dt)
             else:
+                if self.verbose: print("WARNING - update loop slower than desired rate: " + str(dt))
                 pass
-                #print("WARNING - update loop slower than desired rate: " + str(dt))
             # time it
             t0 = time.time()
 
     def __check_detection(self):
         te = time.time()-self.ti
         maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value) for A2SN in self.pool.values()]
-        #print(str(te)+','+','.join([','.join([info[0],str(info[1])]) for info in maxvals]))
+        th0 = 3
+        if self.verbose: print(str(te)+','+','.join([','.join([info[0],str(info[1])]) for info in maxvals]))
         if not self.detected:
-            relvals =[(maxvals[i][0], [(maxvals[i][1] - maxvals[j][1]) >  maxvals[j][1] for j in range(len(maxvals)) if j != i]) for i in range(len(maxvals))]
+            relvals =[(maxvals[i][0], [(maxvals[i][1] - maxvals[j][1]) >  maxvals[j][1]*th0 for j in range(len(maxvals)) if j != i]) for i in range(len(maxvals))]
             th = 10
             for i in range(len(maxvals)):
                 if maxvals[i][1] > th:
                     superior = True
-                    for j in relvals[i][0]:
+                    for j in relvals[i][1]:
                         if not j:
                             superior = False
                     if superior:
                         val = maxvals[i][1]
                         mval = max([maxvals[k][1] for k in range(len(maxvals)) if k != i])
                         self.detected = True
-                        print("DETECTED :" + maxvals[i][0] + " at t = " + str(te) + " conf: " + str(val/mval))
+                        if self.verbose: print("DETECTED :" + maxvals[i][0] + " at t = " + str(te) + " conf: " + str(val/mval))
                         break
 
     def stop_update_loop(self):
@@ -140,9 +142,10 @@ class RunPoolA2SN:
 
 
 class SequenceSimulator:
-    def __init__(self, master_sequences, pool):
+    def __init__(self, master_sequences, pool, verbose = False):
         self.master_sequences = master_sequences
         self.pool = pool
+        self.verbose = verbose
         self.sequence = 0
         self.run_thread = 0
         self.t0 = 0
@@ -156,13 +159,13 @@ class SequenceSimulator:
         self.stop_run = False
         self.run_thread = threading.Thread(target=self.__run_sequence,daemon=True)
         self.t0 = time.time()
-        print("Start simulation of action: " + str(action).upper())
+        if self.verbose: print("Start simulation of action: " + str(action).upper())
         self.run_thread.start()
 
     def __run_sequence(self):
         ti = time.time()
         for new_event, all_events, dt, te in self.sequence:
-            print("NEW EVENT " + str(new_event))
+            if self.verbose: print("NEW EVENT " + str(new_event))
             for A2SN in self.pool.values():
                 A2SN.update_events(all_events)
             tel = time.time() - ti
@@ -171,7 +174,7 @@ class SequenceSimulator:
             ti = time.time()
             if self.__check_stop():
                 return
-        print("Sequence finished.")
+        if self.verbose: print("Sequence finished.")
 
     def stop_run(self):
         self.thread_lock.acquire()
@@ -261,15 +264,15 @@ for action in MasterSequences.keys():
 
 ########################
 # Test the program in RT
-"""
-plotter = PlotPoolA2SN(A2SN_pool,1.0)
-updater = RunPoolA2SN(A2SN_pool, 0.5)
-sequenceSim = SequenceSimulator(MasterSequences, A2SN_pool)
 
-updater.start_update_loop()
-sequenceSim.run_random_sequence()
-plotter.plot_loop()
-"""
+# plotter = PlotPoolA2SN(A2SN_pool,1.0)
+# updater = RunPoolA2SN(A2SN_pool, 0.5, True)
+# sequenceSim = SequenceSimulator(MasterSequences, A2SN_pool)
+#
+# updater.start_update_loop()
+# sequenceSim.run_random_sequence()
+# plotter.plot_loop()
+
 
 #######################
 # Test the program fast
@@ -288,14 +291,14 @@ def check_detection(a2sn_pool, alpha, beta):
                 mval = max([maxvals[k][1] for k in range(len(maxvals)) if k != i])
                 return ([maxvals[i][0], val/mval])
     return 0
-"""
+
 unrecog_perc = 5
-alfa = 10
+alfa = 5
 beta = 10
 i = 0
 while i < 1:
     i += 1
-    # generate confmat
+    #generate confmat
     cmat = {}
     occurr = {}
     for action in list(A2SN_pool.keys()):
@@ -303,7 +306,7 @@ while i < 1:
         occurr[action] = 0
         for action2 in list(A2SN_pool.keys()):
             cmat[action][action2] = 0
-    tests = 1000
+    tests = 50
     update_tick = 0.35
     tot_corr = 0
     corr_edt = 0
@@ -345,6 +348,8 @@ while i < 1:
         for action2 in list(cmat[action].keys()):
             cmat[action][action2] /= occurr[action]
 
+    print(sum([A2SN.node_count for A2SN in A2SN_pool.values()]))
+
     print("CMAT")
     print(cmat)
 
@@ -374,7 +379,7 @@ while i < 1:
     #    alfa *= 0.95
     #else:
     #    alfa *= math.exp(corr_conf/tot_corr)
-"""
+
 
 
 ############

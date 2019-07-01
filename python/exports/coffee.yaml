@@ -2,44 +2,47 @@
 adj: &id001
   0:
     1: &id004 {factor: 1.0, trigger: 31, weight: 1}
-    2: &id005 {factor: 1.0, trigger: 61, weight: 1}
-    3: &id006 {factor: 1.0, trigger: 41, weight: 1}
+    2: &id005 {factor: 1.0, trigger: 91, weight: 1}
+    3: &id006 {factor: 1.0, trigger: 61, weight: 1}
   1:
-    4: &id007 {factor: 0.5, trigger: 41, weight: 1}
+    4: &id007 {factor: 1.0, trigger: 61, weight: 1}
+    5: &id008 {factor: 1.0, trigger: 91, weight: 1}
+    6: &id009 {factor: 1.0, trigger: 41, weight: 1}
   2:
-    5: &id009 {factor: 1.0, trigger: 41, weight: 1}
+    7: &id010 {factor: 1.0, trigger: 41, weight: 1}
   3:
-    4: &id008 {factor: 0.5, trigger: 31, weight: 1}
-    6: &id010 {factor: 1.0, trigger: 91, weight: 1}
+    8: &id011 {factor: 1.0, trigger: 91, weight: 1}
   4:
-    7: &id011 {factor: 0.5, trigger: 91, weight: 1}
+    9: &id012 {factor: 0.5, trigger: 91, weight: 1}
   5:
-    8: &id013 {factor: 0.5, trigger: 91, weight: 1}
+    10: &id014 {factor: 0.5, trigger: 41, weight: 1}
   6:
-    7: &id012 {factor: 0.5, trigger: 31, weight: 1}
-    8: &id014 {factor: 0.5, trigger: 61, weight: 1}
+    10: &id015 {factor: 0.5, trigger: 91, weight: 1}
   7:
-    9: &id015 {factor: 0.5, trigger: 61, weight: 1}
+    11: &id016 {factor: 1.0, trigger: 61, weight: 1}
   8:
-    9: &id016 {factor: 0.5, trigger: 31, weight: 1}
+    9: &id013 {factor: 0.5, trigger: 31, weight: 1}
   9:
-    10: &id017 {factor: 1.0, trigger: 32, weight: 1}
-    11: &id018 {factor: 1.0, trigger: 62, weight: 1}
-    12: &id019 {factor: 1.0, trigger: 42, weight: 1}
+    12: &id017 {factor: 0.3333333333333333, trigger: 41, weight: 1}
   10:
-    13: &id020 {factor: 0.5, trigger: 62, weight: 1}
+    12: &id018 {factor: 0.3333333333333333, trigger: 61, weight: 1}
   11:
-    13: &id021 {factor: 0.5, trigger: 32, weight: 1}
+    12: &id019 {factor: 0.3333333333333333, trigger: 31, weight: 1}
   12:
-    14: &id022 {factor: 1.0, trigger: 62, weight: 1}
-    15: &id023 {factor: 1.0, trigger: 32, weight: 1}
+    13: &id020 {factor: 1.0, trigger: 62, weight: 1}
+    14: &id021 {factor: 1.0, trigger: 42, weight: 1}
+    15: &id022 {factor: 1.0, trigger: 32, weight: 1}
   13:
-    16: &id024 {factor: 0.3333333333333333, trigger: 42, weight: 1}
+    16: &id023 {factor: 0.5, trigger: 42, weight: 1}
   14:
-    16: &id025 {factor: 0.3333333333333333, trigger: 32, weight: 1}
+    16: &id024 {factor: 0.5, trigger: 62, weight: 1}
   15:
-    16: &id026 {factor: 0.3333333333333333, trigger: 62, weight: 1}
-  16: {}
+    17: &id025 {factor: 1.0, trigger: 62, weight: 1}
+  16:
+    18: &id026 {factor: 0.5, trigger: 32, weight: 1}
+  17:
+    18: &id027 {factor: 0.5, trigger: 42, weight: 1}
+  18: {}
 adjlist_dict_factory: &id002 !!python/name:builtins.dict ''
 edge: *id001
 edge_attr_dict_factory: *id002
@@ -65,100 +68,114 @@ node:
     depth: 1
     end: false
     state: !!python/object:state.State
-      state_dict: {61: 1}
+      state_dict: {91: 1}
     value: 0.0
   3:
     color: *id003
     depth: 1
     end: false
     state: !!python/object:state.State
-      state_dict: {41: 1}
+      state_dict: {61: 1}
     value: 0.0
   4:
     color: *id003
     depth: 2
     end: false
     state: !!python/object:state.State
-      state_dict: {31: 1, 41: 1}
+      state_dict: {31: 1, 61: 1}
     value: 0.0
   5:
     color: *id003
     depth: 2
     end: false
     state: !!python/object:state.State
-      state_dict: {41: 1, 61: 1}
+      state_dict: {31: 1, 91: 1}
     value: 0.0
   6:
     color: *id003
     depth: 2
     end: false
     state: !!python/object:state.State
-      state_dict: {41: 1, 91: 1}
+      state_dict: {31: 1, 41: 1}
     value: 0.0
   7:
+    color: *id003
+    depth: 2
+    end: false
+    state: !!python/object:state.State
+      state_dict: {41: 1, 91: 1}
+    value: 0.0
+  8:
+    color: *id003
+    depth: 2
+    end: false
+    state: !!python/object:state.State
+      state_dict: {61: 1, 91: 1}
+    value: 0.0
+  9:
+    color: *id003
+    depth: 3
+    end: false
+    state: !!python/object:state.State
+      state_dict: {31: 1, 61: 1, 91: 1}
+    value: 0.0
+  10:
     color: *id003
     depth: 3
     end: false
     state: !!python/object:state.State
       state_dict: {31: 1, 41: 1, 91: 1}
     value: 0.0
-  8:
+  11:
     color: *id003
     depth: 3
     end: false
     state: !!python/object:state.State
       state_dict: {41: 1, 61: 1, 91: 1}
     value: 0.0
-  9:
+  12:
     color: *id003
     depth: 4
     end: false
     state: !!python/object:state.State
       state_dict: {31: 1, 41: 1, 61: 1, 91: 1}
     value: 0.0
-  10:
-    color: *id003
-    depth: 5
-    end: false
-    state: !!python/object:state.State
-      state_dict: {31: 1, 32: 1, 41: 1, 61: 1, 91: 1}
-    value: 0.0
-  11:
+  13:
     color: *id003
     depth: 5
     end: false
     state: !!python/object:state.State
       state_dict: {31: 1, 41: 1, 61: 1, 62: 1, 91: 1}
     value: 0.0
-  12:
+  14:
     color: *id003
     depth: 5
     end: false
     state: !!python/object:state.State
       state_dict: {31: 1, 41: 1, 42: 1, 61: 1, 91: 1}
     value: 0.0
-  13:
+  15:
     color: *id003
-    depth: 6
+    depth: 5
     end: false
     state: !!python/object:state.State
-      state_dict: {31: 1, 32: 1, 41: 1, 61: 1, 62: 1, 91: 1}
+      state_dict: {31: 1, 32: 1, 41: 1, 61: 1, 91: 1}
     value: 0.0
-  14:
+  16:
     color: *id003
     depth: 6
     end: false
     state: !!python/object:state.State
       state_dict: {31: 1, 41: 1, 42: 1, 61: 1, 62: 1, 91: 1}
     value: 0.0
-  15:
+  17:
     color: *id003
     depth: 6
     end: false
     state: !!python/object:state.State
-      state_dict: {31: 1, 32: 1, 41: 1, 42: 1, 61: 1, 91: 1}
+      state_dict: {31: 1, 32: 1, 41: 1, 61: 1, 62: 1, 91: 1}
     value: 0.0
-  16:
+  18:
     color: *id003
     depth: 7
     end: true
@@ -176,35 +193,38 @@ pred:
     0: *id006
   4:
     1: *id007
-    3: *id008
   5:
-    2: *id009
+    1: *id008
   6:
-    3: *id010
+    1: *id009
   7:
-    4: *id011
-    6: *id012
+    2: *id010
   8:
-    5: *id013
-    6: *id014
+    3: *id011
   9:
-    7: *id015
-    8: *id016
+    4: *id012
+    8: *id013
   10:
-    9: *id017
+    5: *id014
+    6: *id015
   11:
-    9: *id018
+    7: *id016
   12:
-    9: *id019
+    9: *id017
+    10: *id018
+    11: *id019
   13:
-    10: *id020
-    11: *id021
+    12: *id020
   14:
-    12: *id022
+    12: *id021
   15:
-    12: *id023
+    12: *id022
   16:
-    13: *id024
-    14: *id025
-    15: *id026
+    13: *id023
+    14: *id024
+  17:
+    15: *id025
+  18:
+    16: *id026
+    17: *id027
 succ: *id001
