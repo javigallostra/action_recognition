@@ -89,10 +89,10 @@ class RunPoolA2SN:
 
     def __check_detection(self):
         te = time.time()-self.ti
-        maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value/te) for A2SN in self.pool.values()]
-        print(str(te)+','+','.join([','.join([info[0],str(info[1])]) for info in maxvals]))
+        maxvals = [(A2SN.graph.node[0]['action'], A2SN.max_value) for A2SN in self.pool.values()]
+        print(str(round(te,2))+','+','.join([','.join([info[0],str(round(info[1],2))]) for info in maxvals]))
         if not self.detected:
-            relvals =[(maxvals[i][0], [(maxvals[i][1] - maxvals[j][1]) >  maxvals[j][1] for j in range(len(maxvals)) if j != i]) for i in range(len(maxvals))]
+            relvals =[(maxvals[i][0], [(maxvals[i][1] - maxvals[j][1]) >  maxvals[j][1]*10 for j in range(len(maxvals)) if j != i]) for i in range(len(maxvals))]
             th = 10
             for i in range(len(maxvals)):
                 if maxvals[i][1] > th:
@@ -103,8 +103,8 @@ class RunPoolA2SN:
                     if superior:
                         val = maxvals[i][1]
                         mval = max([maxvals[k][1] for k in range(len(maxvals)) if k != i])
-                        self.detected = True
-                        print("DETECTED :" + maxvals[i][0] + " at t = " + str(0) + " conf: " + str(val/mval))
+                        #self.detected = True
+                        print("DETECTED :" + maxvals[i][0] + " conf: " + str(round(val/mval,2)))
                         break
 
     def stop_update_loop(self):
@@ -189,8 +189,8 @@ o = KitchenObjects()
 # Generate master sequences for actions
 gen = SequenceGenerator()
 MasterSequences = {}
-milk_options = ["pascual"]#,"lletnostra"]
-coffee_options = ["nescafe"]
+milk_options = ["lletnostra"]
+coffee_options = ["marcillacafe"]
 cacao_options = ["nesquik"]
 sugar_options = ["sugar"]
 cereal_options = ["acorsugar"]#, "marcillacafe"]

@@ -8,7 +8,7 @@ update the node values with occurred events
 """
 class A2SN_RUN(A2SN_BASE):
 
-    decay_factor = 0.95
+    decay_factor = 0.98
 
     """
     Call A2SN_BASE init function, load graph data from file
